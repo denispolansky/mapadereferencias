@@ -119,6 +119,27 @@ Antes de escribir CSS, se presenta a la autora una mini propuesta tipográfica (
 
 **Resuelto:** la autora eligió **Lora** para el cuerpo (autohospedada en `public/fonts/`), monoespaciada de sistema para metadatos y navegación.
 
+## Manifiesto de diseño
+
+Surgido de una sesión de dirección conceptual: análisis por familias de referencias (editorial — Apartamento, The Gentlewoman, Kinfolk, Aesop; archivo — Are.na, Internet Archive, Rijksmuseum, Cooper Hewitt, The Met; estudios creativos — OK-RM, Studio Airport, DIA, Common Name; gastronomía con espíritu crítico) para entender principios, no copiar estéticas. Estos diez principios guían las decisiones de diseño, arquitectura y desarrollo de acá en adelante:
+
+1. El contenido manda; la interfaz se abstiene. Si una decisión compite por atención con una fotografía o un texto, se pierde.
+2. Las fotografías son documentos, no ilustración. Se muestran en su tamaño y su contexto — nunca recortadas para "quedar lindas" en una grilla.
+3. El aire es jerarquía. El espacio en blanco no es lo que sobra: es lo que ordena.
+4. Cada entrada se lee como una pieza autónoma. Completa en sí misma — nunca un fragmento que depende de scrollear un feed.
+5. Las conexiones se descubren, no se fuerzan. El sistema premia el camino lateral (wikilink, etiqueta, backlink) tanto como el cronológico.
+6. La metadata es parte del diseño. Visible, ordenada, con la misma atención tipográfica que el cuerpo del texto.
+7. El proceso vale tanto como el resultado. Una idea a medio cocinar (`semilla`) tiene tanto derecho a existir en el archivo como una receta probada diez veces.
+8. Ninguna decoración que no venga del contenido. El color, si existe, lo pone la fotografía — nunca la interfaz.
+9. Se diseña para crecer diez años, no para lanzarse una vez. Cada decisión se pregunta si sigue funcionando con diez veces más contenido.
+10. Nunca debe sentirse como una aplicación. Si en algún momento parece Notion o Pinterest, fallamos.
+
+**Marco mental: "mesa de trabajo", no "página web".** Navegar el archivo debe sentirse como recorrer una mesa donde conviven fotografías, libros abiertos, ingredientes y notas — asociación antes que jerarquía de menú. Esto no se traduce en skeuomorfismo (no se dibuja una mesa); se traduce en que mirar algo te lleve a otra cosa por conexión, no por estructura de carpetas. La miniatura variable del índice según `estado` ya es una primera aplicación de esta idea.
+
+**Decisiones derivadas de esta sesión:**
+- El índice se sigue ordenando por fecha por defecto, ordenable a título. No se cambia el mecanismo de "puerta de entrada" por ahora.
+- Productor y libro no se convierten en tipos de contenido nuevos. Siguen como texto libre (`procedencia`, `fuente`) con wikilink informal si hace falta referenciarlos. Se reconsidera si en el uso real aparece la necesidad de citarlos como entradas propias.
+
 ## Cómo trabajar con la autora
 
 Respuestas claras y no innecesariamente largas. Cuando haya varias opciones: compararlas, dar ventajas y desventajas, recomendar con fundamento. Construir de a un paso verificable por vez: después de cada etapa del MVP, mostrarle el resultado corriendo en local antes de seguir. Ella decide; el trabajo se propone y se cuestiona, no se impone.
