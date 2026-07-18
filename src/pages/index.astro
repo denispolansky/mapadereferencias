@@ -1,9 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getTodasLasEntradas } from '../lib/entradas';
-import { formatearFecha, extracto, rutaMedia } from '../lib/formato';
+import { formatearFecha, extracto, rutaMedia, tiempoRelativo } from '../lib/formato';
 
 const entradas = await getTodasLasEntradas();
+
+const ultimaActualizacion = entradas.length
+  ? new Date(Math.max(...entradas.map((e) => (e.data.modificado as Date).getTime())))
+  : null;
 
 const TAMANO_POR_ESTADO: Record<string, string> = {
   estable: 'miniatura-grande',
@@ -27,6 +31,11 @@ const items = entradas
   .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
 ---
 <Base titulo="índice">
+  {ultimaActualizacion && (
+    <p class="archivo-vivo">
+      {entradas.length} {entradas.length === 1 ? 'entrada' : 'entradas'} · última actualización {tiempoRelativo(ultimaActualizacion)}
+    </p>
+  )}
   <div class="controles-indice">
     <span>ordenar por</span>
     <button type="button" data-orden="fecha" class="activo">fecha</button>
@@ -50,6 +59,12 @@ const items = entradas
   </ul>
 </Base>
 <style>
+  .archivo-vivo {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #999;
+    margin: 0 0 2rem;
+  }
   .controles-indice {
     font-family: ui-monospace, monospace;
     font-size: 0.8rem;
@@ -77,8 +92,8 @@ const items = entradas
   }
   .indice-item {
     display: flex;
-    gap: 1rem;
-    padding: 1.25rem 0;
+    gap: 1.5rem;
+    padding: 2.25rem 0;
     border-bottom: 1px solid #eee;
     align-items: flex-start;
   }
@@ -110,7 +125,7 @@ const items = entradas
   .contenido {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.4rem;
     min-width: 0;
   }
   .titulo {
