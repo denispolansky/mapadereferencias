@@ -11,30 +11,48 @@ const { backlinks } = Astro.props;
     <h2>mencionada en</h2>
     <ul>
       {backlinks.map((b) => (
-        <li><a href={`/${b.tipo}/${b.slug}`}>{b.data.titulo}</a></li>
+        <li>
+          <a href={`/${b.tipo}/${b.slug}`}>{b.data.titulo}</a>
+          <span class="tipo">{b.tipo}</span>
+        </li>
       ))}
     </ul>
   </footer>
 )}
 <style>
   .backlinks {
-    margin-top: 3rem;
-    padding-top: 1rem;
+    margin-top: 4.5rem;
+    padding-top: 1.75rem;
     border-top: 1px solid #ccc;
-    font-size: 0.9rem;
   }
   .backlinks h2 {
     font-family: ui-monospace, monospace;
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: #777;
     font-weight: normal;
-    margin-bottom: 0.5rem;
+    margin: 0 0 1.25rem;
   }
   .backlinks ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .backlinks li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .backlinks a {
+    font-size: 1.15rem;
+  }
+  .backlinks .tipo {
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    color: #999;
   }
 </style>
