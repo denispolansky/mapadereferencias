@@ -50,36 +50,43 @@ const items = entradas
     <button type="button" data-orden="fecha" class="activo">fecha</button>
     <button type="button" data-orden="titulo">título</button>
   </div>
-  <ul class="indice" id="indice">
-    {items.map((item) => (
-      <li class:list={['indice-item', { 'con-imagen': !!item.imagen }]} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
-        {item.imagen && (
-          <a class:list={['miniatura', `miniatura-${item.escala}`]} href={`/${item.tipo}/${item.slug}`}>
-            <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
-          </a>
-        )}
-        <div class="contenido">
-          <a class:list={['titulo', `titulo-${item.escala}`]} href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
-          <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
-          {item.etiquetas.length > 0 && (
-            <span class="etiquetas">
-              {item.etiquetas.map((et, i) => (
-                <>
-                  {i > 0 && ' · '}
-                  <a href={`/etiqueta/${et}`}>{et}</a>
-                </>
-              ))}
-            </span>
+  <ul class="muro" id="indice">
+    {items.map((item) => {
+      const esGrande = item.imagen && item.escala === 'grande';
+      const claseCelda = !item.imagen ? 'nota' : esGrande ? 'imagen-2' : 'imagen-1';
+      return (
+        <li class:list={['celda', claseCelda]} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+          {item.imagen && (
+            <a class="marco" href={`/${item.tipo}/${item.slug}`}>
+              <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
+            </a>
           )}
-          {item.conexiones > 0 && (
-            <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
-          )}
-        </div>
-      </li>
-    ))}
+          <div class="contenido">
+            <a class:list={['titulo', `titulo-${item.escala}`]} href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+            <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
+            {item.etiquetas.length > 0 && (
+              <span class="etiquetas">
+                {item.etiquetas.map((et, i) => (
+                  <>
+                    {i > 0 && ' · '}
+                    <a href={`/etiqueta/${et}`}>{et}</a>
+                  </>
+                ))}
+              </span>
+            )}
+            {item.conexiones > 0 && (
+              <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+            )}
+          </div>
+        </li>
+      );
+    })}
   </ul>
 </Base>
 <style>
+  :global(main:has(.muro)) {
+    max-width: 68rem;
+  }
   .archivo-vivo {
     font-family: ui-monospace, monospace;
     font-size: 0.75rem;
@@ -90,7 +97,7 @@ const items = entradas
     font-family: ui-monospace, monospace;
     font-size: 0.8rem;
     color: #777;
-    margin-bottom: 1rem;
+    margin-bottom: 2.5rem;
   }
   .controles-indice button {
     font: inherit;
@@ -106,47 +113,50 @@ const items = entradas
     text-decoration: none;
     font-weight: 600;
   }
-  .indice {
+  .muro {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: row dense;
+    column-gap: 2rem;
+    row-gap: 3rem;
   }
-  .indice-item {
+  .celda {
     display: flex;
-    gap: 1.5rem;
-    padding: 2.25rem 0;
-    border-bottom: 1px solid #eee;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
   }
-  .miniatura {
-    flex-shrink: 0;
-    width: 11rem;
-    transition: width 0.15s ease;
+  .celda.imagen-1 {
+    grid-column: span 1;
   }
-  .miniatura img {
+  .celda.imagen-2 {
+    grid-column: span 2;
+  }
+  .celda.nota {
+    grid-column: span 2;
+    border-top: 1px solid #e5e5e5;
+    padding-top: 1.5rem;
+  }
+  .marco {
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .imagen-2 .marco {
+    aspect-ratio: 3 / 2;
+  }
+  .marco img {
     width: 100%;
-    height: auto;
-  }
-  .miniatura-chica {
-    width: 7rem;
-  }
-  .miniatura-media {
-    width: 11rem;
-  }
-  .miniatura-grande {
-    width: 17rem;
-  }
-  @media (max-width: 32rem) {
-    .miniatura-grande,
-    .miniatura-media,
-    .miniatura-chica {
-      width: 8rem;
-    }
+    height: 100%;
+    object-fit: contain;
+    background: #fafaf8;
   }
   .contenido {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.35rem;
     min-width: 0;
   }
   .titulo {
@@ -162,11 +172,11 @@ const items = entradas
     color: #333;
   }
   .titulo-media {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 500;
   }
   .titulo-grande {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 600;
   }
   .ficha {
@@ -192,6 +202,23 @@ const items = entradas
   }
   .conexiones::before {
     content: '⌁ ';
+  }
+  @media (max-width: 40rem) {
+    .muro {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 1.25rem;
+      row-gap: 2.25rem;
+    }
+  }
+  @media (max-width: 26rem) {
+    .muro {
+      grid-template-columns: 1fr;
+    }
+    .celda.imagen-1,
+    .celda.imagen-2,
+    .celda.nota {
+      grid-column: span 1;
+    }
   }
 </style>
 <script>
