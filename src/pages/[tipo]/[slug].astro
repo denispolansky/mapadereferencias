@@ -24,19 +24,23 @@ const backlinks = await getBacklinks(entrada.id);
 const imagenes: string[] = datos.archivo ? [datos.archivo] : (datos.imagenes ?? []);
 ---
 <Base titulo={datos.titulo}>
-  <article class="columna">
-    <h1>{datos.titulo}</h1>
-    <Metadatos data={datos} />
+  <article>
+    <div class="columna">
+      <h1>{datos.titulo}</h1>
+      <Metadatos data={datos} />
+    </div>
     {imagenes.length > 0 && (
       <div class="imagenes-entrada">
         {imagenes.map((ruta) => <img src={rutaMedia(ruta)} alt="" loading="lazy" />)}
       </div>
     )}
-    {datos.nota && <p class="nota"><em>{datos.nota}</em></p>}
-    <div class="cuerpo">
-      <Content />
+    <div class="columna">
+      {datos.nota && <p class="nota"><em>{datos.nota}</em></p>}
+      <div class="cuerpo">
+        <Content />
+      </div>
+      <Backlinks backlinks={backlinks} />
     </div>
-    <Backlinks backlinks={backlinks} />
   </article>
 </Base>
 <style>
@@ -49,6 +53,7 @@ const imagenes: string[] = datos.archivo ? [datos.archivo] : (datos.imagenes ?? 
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    max-width: 66rem;
     margin: 1.5rem 0;
   }
   .nota {
