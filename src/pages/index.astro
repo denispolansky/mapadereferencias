@@ -5,6 +5,12 @@ import { formatearFecha, extracto, rutaMedia } from '../lib/formato';
 
 const entradas = await getTodasLasEntradas();
 
+const TAMANO_POR_ESTADO: Record<string, string> = {
+  estable: 'miniatura-grande',
+  'en-desarrollo': 'miniatura-media',
+  semilla: 'miniatura-chica',
+};
+
 const items = entradas
   .map((e) => {
     const imagen = e.data.archivo ?? e.data.imagenes?.[0] ?? null;
@@ -14,6 +20,7 @@ const items = entradas
       titulo: e.data.titulo,
       fecha: e.data.fecha as Date,
       imagen,
+      tamano: TAMANO_POR_ESTADO[e.data.estado] ?? 'miniatura-media',
       extracto: extracto(e.body),
     };
   })
@@ -29,7 +36,7 @@ const items = entradas
     {items.map((item) => (
       <li class:list={['indice-item', { 'con-imagen': !!item.imagen }]} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
         {item.imagen && (
-          <a class="miniatura" href={`/${item.tipo}/${item.slug}`}>
+          <a class:list={['miniatura', item.tamano]} href={`/${item.tipo}/${item.slug}`}>
             <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
           </a>
         )}
@@ -78,10 +85,27 @@ const items = entradas
   .miniatura {
     flex-shrink: 0;
     width: 11rem;
+    transition: width 0.15s ease;
   }
   .miniatura img {
     width: 100%;
     height: auto;
+  }
+  .miniatura-chica {
+    width: 7rem;
+  }
+  .miniatura-media {
+    width: 11rem;
+  }
+  .miniatura-grande {
+    width: 17rem;
+  }
+  @media (max-width: 32rem) {
+    .miniatura-grande,
+    .miniatura-media,
+    .miniatura-chica {
+      width: 8rem;
+    }
   }
   .contenido {
     display: flex;
