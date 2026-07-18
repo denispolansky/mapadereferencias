@@ -13,19 +13,17 @@ const ruta = Astro.url.pathname;
     <title>{titulo} · archivo vivo</title>
   </head>
   <body>
-    <div class="armazon">
-      <aside class="sidebar">
-        <a class="marca" href="/">archivo<span class="salto">{' '}</span>vivo</a>
-        <nav>
-          <a href="/" aria-current={ruta === '/' ? 'page' : undefined}>índice</a>
-          <a href="/diario" aria-current={ruta === '/diario' ? 'page' : undefined}>diario</a>
-          <a href="/buscar" aria-current={ruta === '/buscar' ? 'page' : undefined}>buscar</a>
-        </nav>
-      </aside>
-      <main>
-        <slot />
-      </main>
-    </div>
+    <header class="cabecera">
+      <a class="marca" href="/">archivo vivo</a>
+      <nav>
+        <a href="/" aria-current={ruta === '/' ? 'page' : undefined}>índice</a>
+        <a href="/diario" aria-current={ruta === '/diario' ? 'page' : undefined}>diario</a>
+        <a href="/buscar" aria-current={ruta === '/buscar' ? 'page' : undefined}>buscar</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
     <style is:global>
       @font-face {
         font-family: 'Lora';
@@ -51,54 +49,38 @@ const ruta = Astro.url.pathname;
         background: #fff;
         line-height: 1.65;
       }
-      .armazon {
+      .cabecera {
         display: flex;
-        align-items: flex-start;
-      }
-      .sidebar {
-        flex: 0 0 9rem;
-        position: sticky;
-        top: 0;
-        padding: 2rem 1.5rem 3rem 2.5rem;
-        display: flex;
-        flex-direction: column;
+        align-items: baseline;
         gap: 1.25rem;
+        padding: 2rem 2.5rem 2.5rem;
         font-family: ui-monospace, monospace;
         font-size: 0.78rem;
       }
-      .sidebar .marca {
+      .cabecera .marca {
         color: #999;
         text-decoration: none;
         letter-spacing: 0.02em;
       }
-      .sidebar .marca:hover {
+      .cabecera .marca:hover {
         color: #141414;
       }
-      .sidebar .marca .salto {
-        display: block;
-        width: 0;
-        font-size: 0;
-      }
-      .sidebar nav {
+      .cabecera nav {
         display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
+        gap: 1rem;
       }
-      .sidebar nav a {
+      .cabecera nav a {
         color: #999;
         text-decoration: none;
-        width: fit-content;
       }
-      .sidebar nav a:hover {
+      .cabecera nav a:hover {
         color: #141414;
       }
-      .sidebar nav a[aria-current='page'] {
+      .cabecera nav a[aria-current='page'] {
         color: #141414;
       }
       main {
-        flex: 1 1 auto;
-        min-width: 0;
-        padding: 3rem 3rem 7rem 0;
+        padding: 0 2.5rem 7rem;
       }
       .columna {
         max-width: 38rem;
@@ -120,28 +102,9 @@ const ruta = Astro.url.pathname;
         border-bottom: 1px dotted #999;
         cursor: help;
       }
-      @media (max-width: 48rem) {
-        .armazon {
-          flex-direction: column;
-        }
-        .sidebar {
-          flex: 0 0 auto;
-          position: static;
-          flex-direction: row;
-          align-items: baseline;
-          justify-content: space-between;
-          width: 100%;
-          padding: 2rem 1.25rem 1.5rem;
-          gap: 1rem;
-        }
-        .sidebar .marca .salto {
-          display: inline;
-          width: auto;
-          font-size: inherit;
-        }
-        .sidebar nav {
-          flex-direction: row;
-          gap: 1rem;
+      @media (max-width: 40rem) {
+        .cabecera {
+          padding: 1.5rem 1.25rem 2rem;
         }
         main {
           padding: 0 1.25rem 5rem;

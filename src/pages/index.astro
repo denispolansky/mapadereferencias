@@ -1,13 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getTodasLasEntradas, extraerSlugsReferenciados } from '../lib/entradas';
-import { formatearFecha, rutaMedia, tiempoRelativo } from '../lib/formato';
+import { formatearFecha, rutaMedia } from '../lib/formato';
 
 const entradas = await getTodasLasEntradas();
-
-const ultimaActualizacion = entradas.length
-  ? new Date(Math.max(...entradas.map((e) => (e.data.modificado as Date).getTime())))
-  : null;
 
 const conteoBacklinks = new Map<string, number>();
 for (const e of entradas) {
@@ -25,7 +21,6 @@ const items = entradas
       titulo: e.data.titulo,
       fecha: e.data.fecha as Date,
       estado: e.data.estado as string,
-      etiquetas: (e.data.etiquetas ?? []) as string[],
       conexiones: conteoBacklinks.get(e.slug) ?? 0,
       imagen,
     };
@@ -33,11 +28,6 @@ const items = entradas
   .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
 ---
 <Base titulo="índice">
-  {ultimaActualizacion && (
-    <p class="archivo-vivo">
-      {entradas.length} {entradas.length === 1 ? 'entrada' : 'entradas'} · última actualización {tiempoRelativo(ultimaActualizacion)}
-    </p>
-  )}
   <div class="controles-indice">
     <span>ordenar por</span>
     <button type="button" data-orden="fecha" class="activo">fecha</button>
@@ -54,16 +44,6 @@ const items = entradas
         <div class="contenido">
           <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
           <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
-          {item.etiquetas.length > 0 && (
-            <span class="etiquetas">
-              {item.etiquetas.map((et, i) => (
-                <>
-                  {i > 0 && ' · '}
-                  <a href={`/etiqueta/${et}`}>{et}</a>
-                </>
-              ))}
-            </span>
-          )}
           {item.conexiones > 0 && (
             <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
           )}
@@ -73,12 +53,6 @@ const items = entradas
   </ul>
 </Base>
 <style>
-  .archivo-vivo {
-    font-family: ui-monospace, monospace;
-    font-size: 0.75rem;
-    color: #999;
-    margin: 0 0 2rem;
-  }
   .controles-indice {
     font-family: ui-monospace, monospace;
     font-size: 0.8rem;
@@ -155,17 +129,6 @@ const items = entradas
     font-size: 0.72rem;
     letter-spacing: 0.02em;
     color: #999;
-  }
-  .etiquetas {
-    font-family: ui-monospace, monospace;
-    font-size: 0.7rem;
-  }
-  .etiquetas a {
-    color: #777;
-    text-decoration: none;
-  }
-  .etiquetas a:hover {
-    text-decoration: underline;
   }
   .conexiones {
     font-family: ui-monospace, monospace;
