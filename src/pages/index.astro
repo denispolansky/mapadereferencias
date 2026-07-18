@@ -16,12 +16,6 @@ for (const e of entradas) {
   }
 }
 
-const ESCALA_POR_ESTADO: Record<string, string> = {
-  estable: 'grande',
-  'en-desarrollo': 'media',
-  semilla: 'chica',
-};
-
 const items = entradas
   .map((e) => {
     const imagen = e.data.archivo ?? e.data.imagenes?.[0] ?? null;
@@ -34,7 +28,6 @@ const items = entradas
       etiquetas: (e.data.etiquetas ?? []) as string[],
       conexiones: conteoBacklinks.get(e.slug) ?? 0,
       imagen,
-      escala: ESCALA_POR_ESTADO[e.data.estado] ?? 'media',
     };
   })
   .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
@@ -51,36 +44,32 @@ const items = entradas
     <button type="button" data-orden="titulo">título</button>
   </div>
   <ul class="muro" id="indice">
-    {items.map((item) => {
-      const esGrande = item.imagen && item.escala === 'grande';
-      const claseCelda = !item.imagen ? 'nota' : esGrande ? 'imagen-2' : 'imagen-1';
-      return (
-        <li class:list={['celda', claseCelda]} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
-          {item.imagen && (
-            <a class="marco" href={`/${item.tipo}/${item.slug}`}>
-              <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
-            </a>
+    {items.map((item) => (
+      <li class:list={['celda', item.imagen ? 'imagen' : 'nota']} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+        {item.imagen && (
+          <a class="marco" href={`/${item.tipo}/${item.slug}`}>
+            <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
+          </a>
+        )}
+        <div class="contenido">
+          <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+          <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
+          {item.etiquetas.length > 0 && (
+            <span class="etiquetas">
+              {item.etiquetas.map((et, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={`/etiqueta/${et}`}>{et}</a>
+                </>
+              ))}
+            </span>
           )}
-          <div class="contenido">
-            <a class:list={['titulo', `titulo-${item.escala}`]} href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
-            <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
-            {item.etiquetas.length > 0 && (
-              <span class="etiquetas">
-                {item.etiquetas.map((et, i) => (
-                  <>
-                    {i > 0 && ' · '}
-                    <a href={`/etiqueta/${et}`}>{et}</a>
-                  </>
-                ))}
-              </span>
-            )}
-            {item.conexiones > 0 && (
-              <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
-            )}
-          </div>
-        </li>
-      );
-    })}
+          {item.conexiones > 0 && (
+            <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+          )}
+        </div>
+      </li>
+    ))}
   </ul>
 </Base>
 <style>
@@ -94,7 +83,7 @@ const items = entradas
     font-family: ui-monospace, monospace;
     font-size: 0.8rem;
     color: #777;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
   }
   .controles-indice button {
     font: inherit;
@@ -115,34 +104,27 @@ const items = entradas
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-auto-flow: row dense;
     column-gap: 2rem;
-    row-gap: 3.5rem;
+    row-gap: 7rem;
   }
   .celda {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-  }
-  .celda.imagen-1 {
-    grid-column: span 1;
-  }
-  .celda.imagen-2 {
-    grid-column: span 2;
+    gap: 0.6rem;
   }
   .celda.nota {
     grid-column: span 2;
-    border-top: 1px solid #e5e5e5;
+    justify-content: center;
+    min-height: 12rem;
+    border-top: 1px solid #e8e6e1;
     padding-top: 1.5rem;
   }
   .marco {
     display: block;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
-  }
-  .imagen-2 .marco {
-    aspect-ratio: 3 / 2;
   }
   .marco img {
     width: 100%;
@@ -153,38 +135,30 @@ const items = entradas
   .contenido {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.3rem;
     min-width: 0;
   }
   .titulo {
-    color: #111;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #141414;
     text-decoration: none;
   }
   .titulo:hover {
     text-decoration: underline;
   }
-  .titulo-chica {
-    font-size: 1rem;
-    font-weight: 400;
-    color: #3d3d3d;
-  }
-  .titulo-media {
-    font-size: 1.3rem;
-    font-weight: 500;
-  }
-  .titulo-grande {
-    font-size: 2.1rem;
-    font-weight: 600;
-    line-height: 1.15;
+  .nota .titulo {
+    font-size: 1.2rem;
   }
   .ficha {
     font-family: ui-monospace, monospace;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
     color: #999;
   }
   .etiquetas {
     font-family: ui-monospace, monospace;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
   }
   .etiquetas a {
     color: #777;
@@ -195,30 +169,34 @@ const items = entradas
   }
   .conexiones {
     font-family: ui-monospace, monospace;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: #b0aca2;
   }
   .conexiones::before {
     content: '⌁ ';
   }
-  @media (max-width: 75rem) {
+  @media (max-width: 87rem) {
+    .muro {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  @media (max-width: 65rem) {
     .muro {
       grid-template-columns: repeat(3, 1fr);
+      row-gap: 5rem;
     }
   }
   @media (max-width: 48rem) {
     .muro {
       grid-template-columns: repeat(2, 1fr);
       column-gap: 1.25rem;
-      row-gap: 2.25rem;
+      row-gap: 3.5rem;
     }
   }
   @media (max-width: 28rem) {
     .muro {
       grid-template-columns: 1fr;
     }
-    .celda.imagen-1,
-    .celda.imagen-2,
     .celda.nota {
       grid-column: span 1;
     }

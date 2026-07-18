@@ -56,20 +56,23 @@ const ruta = Astro.url.pathname;
         align-items: flex-start;
       }
       .sidebar {
-        flex: 0 0 13rem;
+        flex: 0 0 9rem;
         position: sticky;
         top: 0;
-        padding: 3rem 1.5rem 3rem 2.5rem;
+        padding: 2rem 1.5rem 3rem 2.5rem;
         display: flex;
         flex-direction: column;
-        gap: 3.5rem;
+        gap: 1.25rem;
+        font-family: ui-monospace, monospace;
+        font-size: 0.78rem;
       }
       .sidebar .marca {
-        font-size: 1.4rem;
-        line-height: 1.15;
-        font-weight: 600;
-        color: inherit;
+        color: #999;
         text-decoration: none;
+        letter-spacing: 0.02em;
+      }
+      .sidebar .marca:hover {
+        color: #141414;
       }
       .sidebar .marca .salto {
         display: block;
@@ -79,12 +82,10 @@ const ruta = Astro.url.pathname;
       .sidebar nav {
         display: flex;
         flex-direction: column;
-        gap: 0.9rem;
-        font-family: ui-monospace, monospace;
-        font-size: 0.85rem;
+        gap: 0.6rem;
       }
       .sidebar nav a {
-        color: #777;
+        color: #999;
         text-decoration: none;
         width: fit-content;
       }
@@ -93,7 +94,6 @@ const ruta = Astro.url.pathname;
       }
       .sidebar nav a[aria-current='page'] {
         color: #141414;
-        border-bottom: 1px solid #141414;
       }
       main {
         flex: 1 1 auto;
@@ -133,9 +133,6 @@ const ruta = Astro.url.pathname;
           width: 100%;
           padding: 2rem 1.25rem 1.5rem;
           gap: 1rem;
-        }
-        .sidebar .marca {
-          font-size: 1.15rem;
         }
         .sidebar .marca .salto {
           display: inline;
