@@ -1,0 +1,40 @@
+---
+import type { EntradaUnificada } from '../lib/entradas';
+
+interface Props {
+  backlinks: EntradaUnificada[];
+}
+const { backlinks } = Astro.props;
+---
+{backlinks.length > 0 && (
+  <footer class="backlinks">
+    <h2>mencionada en</h2>
+    <ul>
+      {backlinks.map((b) => (
+        <li><a href={`/${b.tipo}/${b.slug}`}>{b.data.titulo}</a></li>
+      ))}
+    </ul>
+  </footer>
+)}
+<style>
+  .backlinks {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ccc;
+    font-size: 0.9rem;
+  }
+  .backlinks h2 {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #777;
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+  }
+  .backlinks ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

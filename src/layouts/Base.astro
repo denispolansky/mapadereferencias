@@ -1,0 +1,73 @@
+---
+interface Props {
+  titulo: string;
+}
+const { titulo } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{titulo} · archivo vivo</title>
+  </head>
+  <body>
+    <header class="cabecera-sitio">
+      <a class="marca" href="/">archivo vivo</a>
+      <nav>
+        <a href="/">índice</a>
+        <a href="/diario">diario</a>
+        <a href="/buscar">buscar</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <style is:global>
+      /* Estilos provisorios: sin decisión tipográfica todavía. Ver nota de la autora. */
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        color: #111;
+        background: #fff;
+        line-height: 1.5;
+      }
+      main {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 4rem;
+      }
+      .cabecera-sitio {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 1rem;
+        font-family: ui-monospace, monospace;
+        font-size: 0.85rem;
+      }
+      .cabecera-sitio .marca {
+        font-weight: 600;
+        text-decoration: none;
+        color: inherit;
+      }
+      .cabecera-sitio nav a {
+        margin-left: 1rem;
+        color: inherit;
+        text-decoration: none;
+      }
+      .cabecera-sitio nav a:hover {
+        text-decoration: underline;
+      }
+      a { color: #111; }
+      img { max-width: 100%; height: auto; display: block; }
+      .wikilink-roto {
+        color: #999;
+        border-bottom: 1px dotted #999;
+        cursor: help;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+---
+import { formatearFecha } from '../lib/formato';
+
+interface Props {
+  data: Record<string, any>;
+}
+const { data } = Astro.props;
+---
+<dl class="ficha-metadatos">
+  <div><dt>tipo</dt><dd>{data.tipo}</dd></div>
+  <div><dt>fecha</dt><dd>{formatearFecha(data.fecha)}</dd></div>
+  <div><dt>modificado</dt><dd>{formatearFecha(data.modificado)}</dd></div>
+  <div><dt>estado</dt><dd>{data.estado}</dd></div>
+  <div><dt>visibilidad</dt><dd>{data.visibilidad}</dd></div>
+  {data.tipo === 'receta' && (
+    <div><dt>probada</dt><dd>{data.probada} {data.probada === 1 ? 'vez' : 'veces'}</dd></div>
+  )}
+  {data.tipo === 'receta' && data['ultima-prueba'] && (
+    <div><dt>última prueba</dt><dd>{formatearFecha(data['ultima-prueba'])}</dd></div>
+  )}
+  {data.tipo === 'receta' && data.origen && (
+    <div><dt>origen</dt><dd>{data.origen}{data.fuente ? ` — ${data.fuente}` : ''}</dd></div>
+  )}
+  {data.tipo === 'receta' && data['desciende-de'] && (
+    <div><dt>desciende de</dt><dd><a href={`/receta/${data['desciende-de']}`}>{data['desciende-de']}</a></dd></div>
+  )}
+  {data.tipo === 'imagen' && data.origen && (
+    <div><dt>origen</dt><dd>{data.origen}{data.fuente ? ` — ${data.fuente}` : ''}</dd></div>
+  )}
+  {data.tipo === 'ingrediente' && data.procedencia && (
+    <div><dt>procedencia</dt><dd>{data.procedencia}</dd></div>
+  )}
+  {data.tipo === 'ingrediente' && data.variedades?.length > 0 && (
+    <div><dt>variedades</dt><dd>{data.variedades.join(', ')}</dd></div>
+  )}
+  {data.tipo === 'ingrediente' && data.tecnicas?.length > 0 && (
+    <div><dt>técnicas</dt><dd>{data.tecnicas.join(', ')}</dd></div>
+  )}
+  {data.tipo === 'cronica' && data.lugar && (
+    <div><dt>lugar</dt><dd>{data.lugar}</dd></div>
+  )}
+  {data.tipo === 'cronica' && data['fecha-visita'] && (
+    <div><dt>visitado</dt><dd>{formatearFecha(data['fecha-visita'])}</dd></div>
+  )}
+  {data.etiquetas?.length > 0 && (
+    <div>
+      <dt>etiquetas</dt>
+      <dd>
+        {data.etiquetas.map((e: string) => <a class="etiqueta" href={`/etiqueta/${e}`}>{e}</a>)}
+      </dd>
+    </div>
+  )}
+</dl>
+<style>
+  .ficha-metadatos {
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 0.6rem 0;
+    margin: 1rem 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .ficha-metadatos > div {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .ficha-metadatos dt {
+    color: #777;
+    width: 7rem;
+    flex-shrink: 0;
+  }
+  .ficha-metadatos dd {
+    margin: 0;
+  }
+  .etiqueta {
+    margin-right: 0.5rem;
+  }
+</style>

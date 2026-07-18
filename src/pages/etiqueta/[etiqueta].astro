@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTodasLasEntradas } from '../../lib/entradas';
+import { formatearFecha, extracto } from '../../lib/formato';
+
+export async function getStaticPaths() {
+  const entradas = await getTodasLasEntradas();
+  const porEtiqueta = new Map<string, typeof entradas>();
+  for (const entrada of entradas) {
+    for (const etiqueta of entrada.data.etiquetas ?? []) {
+      const lista = porEtiqueta.get(etiqueta) ?? [];
+      lista.push(entrada);
+      porEtiqueta.set(etiqueta, lista);
+    }
+  }
+  return [...porEtiqueta.entries()].map(([etiqueta, entradas]) => ({
+    params: { etiqueta },
+    props: { etiqueta, entradas },
+  }));
+}
+
+const { etiqueta, entradas } = Astro.props;
+const items = entradas
+  .slice()
+  .sort((a: any, b: any) => (b.data.fecha as Date).getTime() - (a.data.fecha as Date).getTime());
+---
+<Base titulo={`etiqueta: ${etiqueta}`}>
+  <h1>etiqueta: {etiqueta}</h1>
+  <ul class="lista-etiqueta">
+    {items.map((e: any) => (
+      <li>
+        <a href={`/${e.tipo}/${e.slug}`}>{e.data.titulo}</a>
+        <span class="meta">{e.tipo} · {formatearFecha(e.data.fecha)}</span>
+        <p>{extracto(e.body, 140)}</p>
+      </li>
+    ))}
+  </ul>
+</Base>
+<style>
+  h1 { font-size: 1.4rem; }
+  .lista-etiqueta {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+  }
+  .lista-etiqueta li {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  .lista-etiqueta a {
+    color: #111;
+    text-decoration: none;
+    font-size: 1.05rem;
+  }
+  .lista-etiqueta a:hover { text-decoration: underline; }
+  .meta {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: 0.5rem;
+  }
+  .lista-etiqueta p {
+    margin: 0.25rem 0 0;
+    color: #444;
+    font-size: 0.9rem;
+  }
+</style>

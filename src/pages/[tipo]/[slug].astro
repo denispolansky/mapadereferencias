@@ -1,0 +1,60 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Metadatos from '../../components/Metadatos.astro';
+import Backlinks from '../../components/Backlinks.astro';
+import { getBacklinks, COLECCION_POR_TIPO } from '../../lib/entradas';
+import { rutaMedia } from '../../lib/formato';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const [tipo, coleccion] of Object.entries(COLECCION_POR_TIPO)) {
+    const entradas = await getCollection(coleccion);
+    for (const entrada of entradas) {
+      paths.push({ params: { tipo, slug: entrada.id }, props: { entrada } });
+    }
+  }
+  return paths;
+}
+
+const { entrada } = Astro.props;
+const datos: Record<string, any> = entrada.data;
+const { Content } = await render(entrada);
+const backlinks = await getBacklinks(entrada.id);
+const imagenes: string[] = datos.archivo ? [datos.archivo] : (datos.imagenes ?? []);
+---
+<Base titulo={datos.titulo}>
+  <article>
+    <h1>{datos.titulo}</h1>
+    <Metadatos data={datos} />
+    {imagenes.length > 0 && (
+      <div class="imagenes-entrada">
+        {imagenes.map((ruta) => <img src={rutaMedia(ruta)} alt="" loading="lazy" />)}
+      </div>
+    )}
+    {datos.nota && <p class="nota"><em>{datos.nota}</em></p>}
+    <div class="cuerpo">
+      <Content />
+    </div>
+    <Backlinks backlinks={backlinks} />
+  </article>
+</Base>
+<style>
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0;
+  }
+  .imagenes-entrada {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .nota {
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .cuerpo :global(p) {
+    margin: 1em 0;
+  }
+</style>

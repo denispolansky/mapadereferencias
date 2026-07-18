@@ -1,0 +1,131 @@
+---
+import Base from '../layouts/Base.astro';
+import { getTodasLasEntradas } from '../lib/entradas';
+import { formatearFecha, extracto, rutaMedia } from '../lib/formato';
+
+const entradas = await getTodasLasEntradas();
+
+const items = entradas
+  .map((e) => {
+    const imagen = e.data.archivo ?? e.data.imagenes?.[0] ?? null;
+    return {
+      slug: e.slug,
+      tipo: e.tipo,
+      titulo: e.data.titulo,
+      fecha: e.data.fecha as Date,
+      imagen,
+      extracto: extracto(e.body),
+    };
+  })
+  .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
+---
+<Base titulo="índice">
+  <div class="controles-indice">
+    <span>ordenar por</span>
+    <button type="button" data-orden="fecha" class="activo">fecha</button>
+    <button type="button" data-orden="titulo">título</button>
+  </div>
+  <ul class="indice" id="indice">
+    {items.map((item) => (
+      <li class:list={['indice-item', { 'con-imagen': !!item.imagen }]} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+        {item.imagen && (
+          <a class="miniatura" href={`/${item.tipo}/${item.slug}`}>
+            <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
+          </a>
+        )}
+        <div class="contenido">
+          <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+          <span class="meta">{item.tipo} · {formatearFecha(item.fecha)}</span>
+          {!item.imagen && item.extracto && <p class="extracto">{item.extracto}</p>}
+        </div>
+      </li>
+    ))}
+  </ul>
+</Base>
+<style>
+  .controles-indice {
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 1rem;
+  }
+  .controles-indice button {
+    font: inherit;
+    background: none;
+    border: none;
+    color: #777;
+    cursor: pointer;
+    padding: 0 0.3rem;
+    text-decoration: underline;
+  }
+  .controles-indice button.activo {
+    color: #111;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .indice {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .indice-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #eee;
+    align-items: flex-start;
+  }
+  .miniatura {
+    flex-shrink: 0;
+    width: 11rem;
+  }
+  .miniatura img {
+    width: 100%;
+    height: auto;
+  }
+  .contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .titulo {
+    font-size: 1.1rem;
+    color: #111;
+    text-decoration: none;
+  }
+  .titulo:hover {
+    text-decoration: underline;
+  }
+  .meta {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #999;
+  }
+  .extracto {
+    margin: 0.3rem 0 0;
+    color: #444;
+    font-size: 0.95rem;
+  }
+</style>
+<script>
+  const contenedor = document.getElementById('indice');
+  const botones = document.querySelectorAll('.controles-indice button');
+  if (contenedor) {
+    botones.forEach((boton) => {
+      boton.addEventListener('click', () => {
+        const orden = boton.getAttribute('data-orden');
+        const items = Array.from(contenedor.children) as HTMLElement[];
+        items.sort((a, b) => {
+          if (orden === 'titulo') {
+            return (a.dataset.titulo ?? '').localeCompare(b.dataset.titulo ?? '');
+          }
+          return (b.dataset.fecha ?? '').localeCompare(a.dataset.fecha ?? '');
+        });
+        items.forEach((item) => contenedor.appendChild(item));
+        botones.forEach((b) => b.classList.remove('activo'));
+        boton.classList.add('activo');
+      });
+    });
+  }
+</script>

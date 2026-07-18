@@ -1,0 +1,122 @@
+---
+import Base from '../layouts/Base.astro';
+import { getTodasLasEntradas } from '../lib/entradas';
+import { extracto, rutaMedia } from '../lib/formato';
+
+const MESES = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
+const entradas = await getTodasLasEntradas();
+
+const items = entradas
+  .map((e) => {
+    const fecha = e.data.fecha as Date;
+    const imagen = e.data.archivo ?? e.data.imagenes?.[0] ?? null;
+    return {
+      slug: e.slug,
+      tipo: e.tipo,
+      titulo: e.data.titulo,
+      fecha,
+      dia: fecha.getUTCDate(),
+      clave: `${fecha.getUTCFullYear()}-${String(fecha.getUTCMonth() + 1).padStart(2, '0')}`,
+      imagen,
+      extracto: extracto(e.body, 140),
+    };
+  })
+  .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
+
+const grupos = new Map<string, typeof items>();
+for (const item of items) {
+  const lista = grupos.get(item.clave) ?? [];
+  lista.push(item);
+  grupos.set(item.clave, lista);
+}
+
+function nombreMes(clave: string) {
+  const [anio, mes] = clave.split('-');
+  return `${MESES[Number(mes) - 1]} ${anio}`;
+}
+---
+<Base titulo="diario">
+  <h1>diario</h1>
+  {[...grupos.entries()].map(([clave, items]) => (
+    <section class="mes">
+      <h2>{nombreMes(clave)}</h2>
+      <ul>
+        {items.map((item) => (
+          <li class="dia-item">
+            <span class="dia">{String(item.dia).padStart(2, '0')}</span>
+            <div class="contenido">
+              <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+              <span class="meta">{item.tipo}</span>
+              {item.imagen && (
+                <a href={`/${item.tipo}/${item.slug}`}>
+                  <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
+                </a>
+              )}
+              {!item.imagen && item.extracto && <p class="extracto">{item.extracto}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
+<style>
+  h1 { font-size: 1.4rem; }
+  .mes h2 {
+    font-family: ui-monospace, monospace;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #777;
+    font-weight: normal;
+    margin: 2rem 0 0.5rem;
+  }
+  .mes ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .dia-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  .dia {
+    font-family: ui-monospace, monospace;
+    color: #999;
+    font-size: 0.85rem;
+    width: 1.5rem;
+    flex-shrink: 0;
+    padding-top: 0.15rem;
+  }
+  .contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .titulo {
+    color: #111;
+    text-decoration: none;
+  }
+  .titulo:hover { text-decoration: underline; }
+  .meta {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #999;
+  }
+  .contenido img {
+    max-width: 16rem;
+    margin-top: 0.4rem;
+  }
+  .extracto {
+    margin: 0.2rem 0 0;
+    color: #444;
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="buscar">
+  <h1>buscar</h1>
+  <input type="search" id="campo-busqueda" placeholder="título, texto o etiqueta…" autofocus />
+  <p id="estado-busqueda" class="estado"></p>
+  <ul id="resultados"></ul>
+</Base>
+<style>
+  h1 { font-size: 1.4rem; }
+  #campo-busqueda {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    border: none;
+    border-bottom: 1px solid #999;
+    outline: none;
+  }
+  #campo-busqueda:focus {
+    border-bottom-color: #111;
+  }
+  .estado {
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    color: #999;
+    margin: 0.75rem 0 0;
+  }
+  #resultados {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
+  #resultados li {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  #resultados a {
+    color: #111;
+    text-decoration: none;
+    font-size: 1.05rem;
+  }
+  #resultados a:hover { text-decoration: underline; }
+  #resultados .meta {
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: 0.5rem;
+  }
+  #resultados p {
+    margin: 0.25rem 0 0;
+    color: #444;
+    font-size: 0.9rem;
+  }
+</style>
+<script>
+  interface ItemBusqueda {
+    slug: string;
+    tipo: string;
+    titulo: string;
+    etiquetas: string[];
+    extracto: string;
+    texto: string;
+  }
+
+  const campo = document.getElementById('campo-busqueda') as HTMLInputElement;
+  const lista = document.getElementById('resultados') as HTMLUListElement;
+  const estado = document.getElementById('estado-busqueda') as HTMLParagraphElement;
+  let indice: ItemBusqueda[] = [];
+
+  fetch('/indice-busqueda.json')
+    .then((r) => r.json())
+    .then((datos: ItemBusqueda[]) => {
+      indice = datos;
+      estado.textContent = `${indice.length} entradas indexadas`;
+    });
+
+  function render(items: ItemBusqueda[]) {
+    lista.innerHTML = '';
+    for (const item of items) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `/${item.tipo}/${item.slug}`;
+      a.textContent = item.titulo;
+      const meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = item.tipo;
+      const p = document.createElement('p');
+      p.textContent = item.extracto;
+      li.appendChild(a);
+      li.appendChild(meta);
+      li.appendChild(p);
+      lista.appendChild(li);
+    }
+  }
+
+  campo.addEventListener('input', () => {
+    const consulta = campo.value.trim().toLowerCase();
+    if (!consulta) {
+      lista.innerHTML = '';
+      estado.textContent = `${indice.length} entradas indexadas`;
+      return;
+    }
+    const resultados = indice.filter((item) => item.texto.includes(consulta));
+    estado.textContent = `${resultados.length} resultado${resultados.length === 1 ? '' : 's'}`;
+    render(resultados);
+  });
+</script>
