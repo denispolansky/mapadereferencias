@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getTodasLasEntradas } from '../lib/entradas';
-import { formatearFecha, extracto, rutaMedia, tiempoRelativo } from '../lib/formato';
+import { getTodasLasEntradas, extraerSlugsReferenciados } from '../lib/entradas';
+import { formatearFecha, rutaMedia, tiempoRelativo } from '../lib/formato';
 
 const entradas = await getTodasLasEntradas();
 
@@ -9,10 +9,17 @@ const ultimaActualizacion = entradas.length
   ? new Date(Math.max(...entradas.map((e) => (e.data.modificado as Date).getTime())))
   : null;
 
-const TAMANO_POR_ESTADO: Record<string, string> = {
-  estable: 'miniatura-grande',
-  'en-desarrollo': 'miniatura-media',
-  semilla: 'miniatura-chica',
+const conteoBacklinks = new Map<string, number>();
+for (const e of entradas) {
+  for (const slug of extraerSlugsReferenciados(e.body)) {
+    conteoBacklinks.set(slug, (conteoBacklinks.get(slug) ?? 0) + 1);
+  }
+}
+
+const ESCALA_POR_ESTADO: Record<string, string> = {
+  estable: 'grande',
+  'en-desarrollo': 'media',
+  semilla: 'chica',
 };
 
 const items = entradas
@@ -23,9 +30,11 @@ const items = entradas
       tipo: e.tipo,
       titulo: e.data.titulo,
       fecha: e.data.fecha as Date,
+      estado: e.data.estado as string,
+      etiquetas: (e.data.etiquetas ?? []) as string[],
+      conexiones: conteoBacklinks.get(e.slug) ?? 0,
       imagen,
-      tamano: TAMANO_POR_ESTADO[e.data.estado] ?? 'miniatura-media',
-      extracto: extracto(e.body),
+      escala: ESCALA_POR_ESTADO[e.data.estado] ?? 'media',
     };
   })
   .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
@@ -45,14 +54,26 @@ const items = entradas
     {items.map((item) => (
       <li class:list={['indice-item', { 'con-imagen': !!item.imagen }]} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
         {item.imagen && (
-          <a class:list={['miniatura', item.tamano]} href={`/${item.tipo}/${item.slug}`}>
+          <a class:list={['miniatura', `miniatura-${item.escala}`]} href={`/${item.tipo}/${item.slug}`}>
             <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
           </a>
         )}
         <div class="contenido">
-          <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
-          <span class="meta">{item.tipo} · {formatearFecha(item.fecha)}</span>
-          {!item.imagen && item.extracto && <p class="extracto">{item.extracto}</p>}
+          <a class:list={['titulo', `titulo-${item.escala}`]} href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+          <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
+          {item.etiquetas.length > 0 && (
+            <span class="etiquetas">
+              {item.etiquetas.map((et, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={`/etiqueta/${et}`}>{et}</a>
+                </>
+              ))}
+            </span>
+          )}
+          {item.conexiones > 0 && (
+            <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+          )}
         </div>
       </li>
     ))}
@@ -129,22 +150,48 @@ const items = entradas
     min-width: 0;
   }
   .titulo {
-    font-size: 1.1rem;
     color: #111;
     text-decoration: none;
   }
   .titulo:hover {
     text-decoration: underline;
   }
-  .meta {
+  .titulo-chica {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #333;
+  }
+  .titulo-media {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+  .titulo-grande {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+  .ficha {
     font-family: ui-monospace, monospace;
     font-size: 0.75rem;
     color: #999;
   }
-  .extracto {
-    margin: 0.3rem 0 0;
-    color: #444;
-    font-size: 0.95rem;
+  .etiquetas {
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+  }
+  .etiquetas a {
+    color: #777;
+    text-decoration: none;
+  }
+  .etiquetas a:hover {
+    text-decoration: underline;
+  }
+  .conexiones {
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    color: #b0aca2;
+  }
+  .conexiones::before {
+    content: '⌁ ';
   }
 </style>
 <script>
