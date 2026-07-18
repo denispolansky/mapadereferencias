@@ -26,4 +26,6 @@ Abre `http://localhost:4321`.
 
 ## Estado
 
-Las cinco entradas en `contenido/` son de prueba (marcadas "entrada de prueba"), solo para validar que el esquema funciona. Faltan reemplazarlas por los seis ítems reales. La tipografía todavía no está decidida — el sitio usa una fuente de sistema como placeholder.
+Las cinco entradas en `contenido/` son de prueba (marcadas "entrada de prueba"), solo para validar que el esquema funciona. Faltan reemplazarlas por los seis ítems reales.
+
+Tipografía: Lora para el cuerpo (autohospedada en `public/fonts/`, sin depender de Google Fonts en runtime), monoespaciada de sistema para metadatos y navegación.
