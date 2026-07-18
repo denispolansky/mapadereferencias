@@ -3,9 +3,9 @@ titulo: "Lygaria (Kea)"
 tipo: cronica
 fecha: 2026-07-18
 modificado: 2026-07-18
-estado: semilla
+estado: en-desarrollo
 visibilidad: privada
-etiquetas: []
+etiquetas: ["viaje"]
 lugar: "Lygaria, Kea"
-imagenes: []
+imagenes: ["2026-07-18-lygaria-kea.jpg"]
 ---

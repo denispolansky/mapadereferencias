@@ -8,7 +8,7 @@ visibilidad: privada
 etiquetas: ["prueba"]
 lugar: "Alcnafory"
 fecha-visita: 2026-07-18
-imagenes: []
+imagenes: ["2026-07-18-alcnafory.jpg"]
 ---
 
 Entrada de prueba para validar el esquema de crónicas. Reemplazar por la crónica real de la comida en Alcnafory (menú y observaciones).
