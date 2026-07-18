@@ -25,19 +25,21 @@ const items = entradas
   .sort((a: any, b: any) => (b.data.fecha as Date).getTime() - (a.data.fecha as Date).getTime());
 ---
 <Base titulo={`etiqueta: ${etiqueta}`}>
-  <h1>etiqueta: {etiqueta}</h1>
-  <ul class="lista-etiqueta">
-    {items.map((e: any) => (
-      <li>
-        <a href={`/${e.tipo}/${e.slug}`}>{e.data.titulo}</a>
-        <span class="meta">{e.tipo} · {formatearFecha(e.data.fecha)}</span>
-        <p>{extracto(e.body, 140)}</p>
-      </li>
-    ))}
-  </ul>
+  <div class="columna">
+    <h1>etiqueta: {etiqueta}</h1>
+    <ul class="lista-etiqueta">
+      {items.map((e: any) => (
+        <li>
+          <a href={`/${e.tipo}/${e.slug}`}>{e.data.titulo}</a>
+          <span class="meta">{e.tipo} · {formatearFecha(e.data.fecha)}</span>
+          <p>{extracto(e.body, 140)}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
 </Base>
 <style>
-  h1 { font-size: 1.4rem; }
+  h1 { font-size: 2rem; }
   .lista-etiqueta {
     list-style: none;
     margin: 1.5rem 0 0;

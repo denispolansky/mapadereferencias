@@ -84,9 +84,6 @@ const items = entradas
   </ul>
 </Base>
 <style>
-  :global(main:has(.muro)) {
-    max-width: 68rem;
-  }
   .archivo-vivo {
     font-family: ui-monospace, monospace;
     font-size: 0.75rem;
@@ -118,10 +115,10 @@ const items = entradas
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-auto-flow: row dense;
     column-gap: 2rem;
-    row-gap: 3rem;
+    row-gap: 3.5rem;
   }
   .celda {
     display: flex;
@@ -169,15 +166,16 @@ const items = entradas
   .titulo-chica {
     font-size: 1rem;
     font-weight: 400;
-    color: #333;
+    color: #3d3d3d;
   }
   .titulo-media {
-    font-size: 1.15rem;
+    font-size: 1.3rem;
     font-weight: 500;
   }
   .titulo-grande {
-    font-size: 1.5rem;
+    font-size: 2.1rem;
     font-weight: 600;
+    line-height: 1.15;
   }
   .ficha {
     font-family: ui-monospace, monospace;
@@ -203,14 +201,19 @@ const items = entradas
   .conexiones::before {
     content: '⌁ ';
   }
-  @media (max-width: 40rem) {
+  @media (max-width: 75rem) {
+    .muro {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (max-width: 48rem) {
     .muro {
       grid-template-columns: repeat(2, 1fr);
       column-gap: 1.25rem;
       row-gap: 2.25rem;
     }
   }
-  @media (max-width: 26rem) {
+  @media (max-width: 28rem) {
     .muro {
       grid-template-columns: 1fr;
     }

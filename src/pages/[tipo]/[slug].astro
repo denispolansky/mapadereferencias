@@ -24,7 +24,7 @@ const backlinks = await getBacklinks(entrada.id);
 const imagenes: string[] = datos.archivo ? [datos.archivo] : (datos.imagenes ?? []);
 ---
 <Base titulo={datos.titulo}>
-  <article>
+  <article class="columna">
     <h1>{datos.titulo}</h1>
     <Metadatos data={datos} />
     {imagenes.length > 0 && (
@@ -41,7 +41,8 @@ const imagenes: string[] = datos.archivo ? [datos.archivo] : (datos.imagenes ?? 
 </Base>
 <style>
   h1 {
-    font-size: 1.6rem;
+    font-size: 2.3rem;
+    line-height: 1.15;
     margin-bottom: 0;
   }
   .imagenes-entrada {

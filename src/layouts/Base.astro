@@ -3,6 +3,7 @@ interface Props {
   titulo: string;
 }
 const { titulo } = Astro.props;
+const ruta = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="es">
@@ -12,17 +13,19 @@ const { titulo } = Astro.props;
     <title>{titulo} · archivo vivo</title>
   </head>
   <body>
-    <header class="cabecera-sitio">
-      <a class="marca" href="/">archivo vivo</a>
-      <nav>
-        <a href="/">índice</a>
-        <a href="/diario">diario</a>
-        <a href="/buscar">buscar</a>
-      </nav>
-    </header>
-    <main>
-      <slot />
-    </main>
+    <div class="armazon">
+      <aside class="sidebar">
+        <a class="marca" href="/">archivo<span class="salto">{' '}</span>vivo</a>
+        <nav>
+          <a href="/" aria-current={ruta === '/' ? 'page' : undefined}>índice</a>
+          <a href="/diario" aria-current={ruta === '/diario' ? 'page' : undefined}>diario</a>
+          <a href="/buscar" aria-current={ruta === '/buscar' ? 'page' : undefined}>buscar</a>
+        </nav>
+      </aside>
+      <main>
+        <slot />
+      </main>
+    </div>
     <style is:global>
       @font-face {
         font-family: 'Lora';
@@ -39,48 +42,73 @@ const { titulo } = Astro.props;
         src: url('/fonts/lora-italic.woff2') format('woff2');
       }
       * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
       body {
         margin: 0;
         font-family: 'Lora', Georgia, 'Times New Roman', serif;
         font-size: 1.125rem;
-        color: #111;
+        color: #141414;
         background: #fff;
         line-height: 1.65;
       }
-      main {
-        max-width: 42rem;
-        margin: 0 auto;
-        padding: 2rem 1.25rem 7rem;
-      }
-      .cabecera-sitio {
+      .armazon {
         display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        max-width: 42rem;
-        margin: 0 auto;
-        padding: 3rem 1.25rem 1.5rem;
+        align-items: flex-start;
+      }
+      .sidebar {
+        flex: 0 0 13rem;
+        position: sticky;
+        top: 0;
+        padding: 3rem 1.5rem 3rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 3.5rem;
+      }
+      .sidebar .marca {
+        font-size: 1.4rem;
+        line-height: 1.15;
+        font-weight: 600;
+        color: inherit;
+        text-decoration: none;
+      }
+      .sidebar .marca .salto {
+        display: block;
+        width: 0;
+        font-size: 0;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
         font-family: ui-monospace, monospace;
         font-size: 0.85rem;
       }
-      .cabecera-sitio .marca {
-        font-weight: 600;
+      .sidebar nav a {
+        color: #777;
         text-decoration: none;
-        color: inherit;
+        width: fit-content;
       }
-      .cabecera-sitio nav a {
-        margin-left: 1rem;
-        color: inherit;
-        text-decoration: none;
+      .sidebar nav a:hover {
+        color: #141414;
       }
-      .cabecera-sitio nav a:hover {
-        text-decoration: underline;
+      .sidebar nav a[aria-current='page'] {
+        color: #141414;
+        border-bottom: 1px solid #141414;
       }
-      a { color: #111; }
+      main {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 3rem 3rem 7rem 0;
+      }
+      .columna {
+        max-width: 38rem;
+      }
+      a { color: #141414; }
       img { max-width: 100%; height: auto; display: block; }
       a.wikilink {
         color: inherit;
         text-decoration: none;
-        border-bottom: 1px dotted #111;
+        border-bottom: 1px dotted #141414;
         transition: border-bottom-style 0.15s ease;
       }
       a.wikilink:hover,
@@ -91,6 +119,36 @@ const { titulo } = Astro.props;
         color: #999;
         border-bottom: 1px dotted #999;
         cursor: help;
+      }
+      @media (max-width: 48rem) {
+        .armazon {
+          flex-direction: column;
+        }
+        .sidebar {
+          flex: 0 0 auto;
+          position: static;
+          flex-direction: row;
+          align-items: baseline;
+          justify-content: space-between;
+          width: 100%;
+          padding: 2rem 1.25rem 1.5rem;
+          gap: 1rem;
+        }
+        .sidebar .marca {
+          font-size: 1.15rem;
+        }
+        .sidebar .marca .salto {
+          display: inline;
+          width: auto;
+          font-size: inherit;
+        }
+        .sidebar nav {
+          flex-direction: row;
+          gap: 1rem;
+        }
+        main {
+          padding: 0 1.25rem 5rem;
+        }
       }
     </style>
   </body>

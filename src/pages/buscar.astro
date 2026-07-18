@@ -2,13 +2,15 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base titulo="buscar">
-  <h1>buscar</h1>
-  <input type="search" id="campo-busqueda" placeholder="título, texto o etiqueta…" autofocus />
-  <p id="estado-busqueda" class="estado"></p>
-  <ul id="resultados"></ul>
+  <div class="columna">
+    <h1>buscar</h1>
+    <input type="search" id="campo-busqueda" placeholder="título, texto o etiqueta…" autofocus />
+    <p id="estado-busqueda" class="estado"></p>
+    <ul id="resultados"></ul>
+  </div>
 </Base>
 <style>
-  h1 { font-size: 1.4rem; }
+  h1 { font-size: 2rem; }
   #campo-busqueda {
     width: 100%;
     font: inherit;

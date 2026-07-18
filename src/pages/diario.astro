@@ -40,32 +40,34 @@ function nombreMes(clave: string) {
 }
 ---
 <Base titulo="diario">
-  <h1>diario</h1>
-  {[...grupos.entries()].map(([clave, items]) => (
-    <section class="mes">
-      <h2>{nombreMes(clave)}</h2>
-      <ul>
-        {items.map((item) => (
-          <li class="dia-item">
-            <span class="dia">{String(item.dia).padStart(2, '0')}</span>
-            <div class="contenido">
-              <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
-              <span class="meta">{item.tipo}</span>
-              {item.imagen && (
-                <a href={`/${item.tipo}/${item.slug}`}>
-                  <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
-                </a>
-              )}
-              {!item.imagen && item.extracto && <p class="extracto">{item.extracto}</p>}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+  <div class="columna">
+    <h1>diario</h1>
+    {[...grupos.entries()].map(([clave, items]) => (
+      <section class="mes">
+        <h2>{nombreMes(clave)}</h2>
+        <ul>
+          {items.map((item) => (
+            <li class="dia-item">
+              <span class="dia">{String(item.dia).padStart(2, '0')}</span>
+              <div class="contenido">
+                <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+                <span class="meta">{item.tipo}</span>
+                {item.imagen && (
+                  <a href={`/${item.tipo}/${item.slug}`}>
+                    <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
+                  </a>
+                )}
+                {!item.imagen && item.extracto && <p class="extracto">{item.extracto}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
 </Base>
 <style>
-  h1 { font-size: 1.4rem; }
+  h1 { font-size: 2rem; }
   .mes h2 {
     font-family: ui-monospace, monospace;
     font-size: 0.85rem;
