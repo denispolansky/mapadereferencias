@@ -78,9 +78,10 @@ const items = entradas
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, 11rem);
+    justify-content: space-between;
     grid-auto-flow: row dense;
-    column-gap: 3rem;
+    column-gap: 2rem;
     row-gap: 8rem;
   }
   .celda {
@@ -88,13 +89,8 @@ const items = entradas
     flex-direction: column;
     gap: 0.6rem;
   }
-  .celda.imagen {
-    max-width: 11rem;
-    justify-self: start;
-  }
   .celda.nota {
     grid-column: span 2;
-    max-width: 22rem;
     justify-content: center;
     min-height: 12rem;
     border-top: 1px solid #e8e6e1;
@@ -143,31 +139,16 @@ const items = entradas
   .conexiones::before {
     content: '⌁ ';
   }
-  @media (max-width: 87rem) {
-    .muro {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
   @media (max-width: 65rem) {
     .muro {
-      grid-template-columns: repeat(3, 1fr);
       row-gap: 5rem;
     }
   }
-  @media (max-width: 48rem) {
+  @media (max-width: 40rem) {
     .muro {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fill, 8.5rem);
       column-gap: 1.25rem;
-      row-gap: 3.5rem;
-    }
-  }
-  @media (max-width: 28rem) {
-    .muro {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .celda.nota {
-      grid-column: span 2;
-      max-width: none;
+      row-gap: 3rem;
     }
   }
 </style>

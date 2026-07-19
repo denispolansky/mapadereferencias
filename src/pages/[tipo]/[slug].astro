@@ -53,7 +53,7 @@ const imagenes: string[] = datos.archivo ? [datos.archivo] : (datos.imagenes ?? 
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-width: 66rem;
+    max-width: min(66rem, 92%);
     margin: 1.5rem 0;
   }
   .nota {
