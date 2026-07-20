@@ -78,10 +78,10 @@ const items = entradas
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 11rem);
+    grid-template-columns: repeat(auto-fill, 9rem);
     justify-content: space-between;
     grid-auto-flow: row dense;
-    column-gap: 2rem;
+    column-gap: 2.5rem;
     row-gap: 8rem;
   }
   .celda {
@@ -90,9 +90,7 @@ const items = entradas
     gap: 0.6rem;
   }
   .celda.nota {
-    grid-column: span 2;
-    justify-content: center;
-    min-height: 12rem;
+    justify-content: flex-end;
     border-top: 1px solid #e8e6e1;
     padding-top: 1.5rem;
   }
@@ -122,9 +120,6 @@ const items = entradas
   .titulo:hover {
     text-decoration: underline;
   }
-  .nota .titulo {
-    font-size: 1.2rem;
-  }
   .ficha {
     font-family: ui-monospace, monospace;
     font-size: 0.72rem;
@@ -146,8 +141,8 @@ const items = entradas
   }
   @media (max-width: 40rem) {
     .muro {
-      grid-template-columns: repeat(auto-fill, 8.5rem);
-      column-gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, 7.5rem);
+      column-gap: 1.5rem;
       row-gap: 3rem;
     }
   }
