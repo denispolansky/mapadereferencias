@@ -119,6 +119,8 @@ Antes de escribir CSS, se presenta a la autora una mini propuesta tipográfica (
 
 **Resuelto:** la autora eligió **Lora** para el cuerpo (autohospedada en `public/fonts/`), monoespaciada de sistema para metadatos y navegación.
 
+**Actualizado (sesión de referencias — essesi.com, Are.na, galerie5b.net):** se suma **Fraunces** (itálica) como segunda tipografía para títulos de entrada y nombres de obra — Lora sigue siendo el cuerpo. Se revoca a propósito "sin colores de acento": hay un color de acento (`--acento`, terracota `#9c3b26`) para links y estados interactivos, y un color fijo por tipo de entrada para las conexiones (ver principio 8 del manifiesto). Las imágenes se mantienen sin sombra por decisión explícita, consistente con la regla original.
+
 ## Manifiesto de diseño
 
 Surgido de una sesión de dirección conceptual: análisis por familias de referencias (editorial — Apartamento, The Gentlewoman, Kinfolk, Aesop; archivo — Are.na, Internet Archive, Rijksmuseum, Cooper Hewitt, The Met; estudios creativos — OK-RM, Studio Airport, DIA, Common Name; gastronomía con espíritu crítico) para entender principios, no copiar estéticas. Estos diez principios guían las decisiones de diseño, arquitectura y desarrollo de acá en adelante:

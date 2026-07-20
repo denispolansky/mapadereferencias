@@ -39,6 +39,23 @@ const ruta = Astro.url.pathname;
         font-display: swap;
         src: url('/fonts/lora-italic.woff2') format('woff2');
       }
+      @font-face {
+        font-family: 'Fraunces';
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url('/fonts/fraunces-variable.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Fraunces';
+        font-style: italic;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url('/fonts/fraunces-italic.woff2') format('woff2');
+      }
+      :root {
+        --acento: #9c3b26;
+      }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
       body {
@@ -48,6 +65,10 @@ const ruta = Astro.url.pathname;
         color: #141414;
         background: #fff;
         line-height: 1.65;
+      }
+      .obra {
+        font-family: 'Fraunces', 'Lora', serif;
+        font-style: italic;
       }
       .cabecera {
         display: flex;
@@ -64,7 +85,7 @@ const ruta = Astro.url.pathname;
         text-decoration: none;
       }
       .cabecera .marca:hover {
-        color: #141414;
+        color: var(--acento);
       }
       .cabecera nav {
         display: flex;
@@ -75,7 +96,7 @@ const ruta = Astro.url.pathname;
         text-decoration: none;
       }
       .cabecera nav a:hover {
-        color: #141414;
+        color: var(--acento);
       }
       .cabecera nav a[aria-current='page'] {
         color: #141414;
@@ -87,15 +108,18 @@ const ruta = Astro.url.pathname;
         max-width: 38rem;
       }
       a { color: #141414; }
+      a:hover { color: var(--acento); }
       img { max-width: 100%; height: auto; display: block; }
       a.wikilink {
         color: inherit;
         text-decoration: none;
         border-bottom: 1px dotted #141414;
-        transition: border-bottom-style 0.15s ease;
+        transition: border-bottom-style 0.15s ease, color 0.15s ease;
       }
       a.wikilink:hover,
       a.wikilink:focus-visible {
+        color: var(--acento);
+        border-bottom-color: var(--acento);
         border-bottom-style: solid;
       }
       .wikilink-roto {

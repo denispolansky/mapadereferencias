@@ -24,7 +24,7 @@ const items = backlinks.map((b) => ({
             {b.imagen && <img class="miniatura" src={rutaMedia(b.imagen)} alt="" loading="lazy" />}
             <span class="info">
               <span class="tipo">{b.tipo}</span>
-              <span class="titulo-bloque">{b.titulo}</span>
+              <span class="titulo-bloque obra">{b.titulo}</span>
             </span>
           </a>
         </li>
@@ -89,6 +89,7 @@ const items = backlinks.map((b) => ({
     color: #141414;
   }
   .bloque a:hover .titulo-bloque {
+    color: var(--acento);
     text-decoration: underline;
   }
   .bloque[data-tipo='idea'] .tipo { color: #9c7a3c; }

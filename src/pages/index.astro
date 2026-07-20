@@ -42,7 +42,7 @@ const items = entradas
           </a>
         )}
         <div class="contenido">
-          <a class="titulo" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+          <a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
           <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
           {item.conexiones > 0 && (
             <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
@@ -69,7 +69,7 @@ const items = entradas
     text-decoration: underline;
   }
   .controles-indice button.activo {
-    color: #111;
+    color: var(--acento);
     text-decoration: none;
     font-weight: 600;
   }
