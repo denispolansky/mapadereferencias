@@ -130,7 +130,7 @@ Surgido de una sesión de dirección conceptual: análisis por familias de refer
 5. Las conexiones se descubren, no se fuerzan. El sistema premia el camino lateral (wikilink, etiqueta, backlink) tanto como el cronológico.
 6. La metadata es parte del diseño. Visible, ordenada, con la misma atención tipográfica que el cuerpo del texto.
 7. El proceso vale tanto como el resultado. Una idea a medio cocinar (`semilla`) tiene tanto derecho a existir en el archivo como una receta probada diez veces.
-8. Ninguna decoración que no venga del contenido. El color, si existe, lo pone la fotografía — nunca la interfaz.
+8. Ninguna decoración que no venga del contenido o que no informe algo real. El color, por defecto, lo pone la fotografía — nunca la interfaz. Única excepción consciente: un color fijo por tipo de entrada (idea/receta/imagen/ingrediente/crónica) para señalizar conexiones agrupadas (ver "mencionada en" de cada entrada) — ahí el color informa qué se está mirando, no decora.
 9. Se diseña para crecer diez años, no para lanzarse una vez. Cada decisión se pregunta si sigue funcionando con diez veces más contenido.
 10. Nunca debe sentirse como una aplicación. Si en algún momento parece Notion o Pinterest, fallamos.
 
@@ -139,6 +139,7 @@ Surgido de una sesión de dirección conceptual: análisis por familias de refer
 **Decisiones derivadas de esta sesión:**
 - El índice se sigue ordenando por fecha por defecto, ordenable a título. No se cambia el mecanismo de "puerta de entrada" por ahora.
 - Productor y libro no se convierten en tipos de contenido nuevos. Siguen como texto libre (`procedencia`, `fuente`) con wikilink informal si hace falta referenciarlos. Se reconsidera si en el uso real aparece la necesidad de citarlos como entradas propias.
+- Referencia Are.na (vista de canal "hypertext club"): se adopta la idea de mostrar las conexiones de una entrada como un grupo de bloques-preview (miniatura + tipo + título) enmarcado, en vez de una lista de texto plana — ver componente `Backlinks`. No se adopta la lógica de canales/colecciones de Are.na en sí (eso sigue siendo el compromiso post-MVP ya anotado).
 
 ## Cómo trabajar con la autora
 
