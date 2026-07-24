@@ -38,8 +38,11 @@ const items = entradas
   .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
 ---
 <Base titulo="índice">
+  <div class="buscador-indice">
+    <input type="search" id="filtro" class="obra" placeholder="buscar en el archivo…" autocomplete="off" />
+  </div>
   <div class="controles-indice">
-    <span class="conteo">{items.length} entradas</span>
+    <span class="conteo" id="conteo">{items.length} entradas</span>
     <div class="acciones">
       <div class="orden">
         <button type="button" data-orden="fecha" class="activo">fecha</button>
@@ -59,7 +62,7 @@ const items = entradas
   <div class="indice-vistas" id="indice-vistas" data-vista="grilla">
     <ul class="muro" id="indice">
       {items.map((item) => (
-        <li class="celda" data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+        <li class="celda" data-fecha={item.fecha.toISOString()} data-titulo={item.titulo} data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
           <a class="marco" href={`/${item.tipo}/${item.slug}`} style={item.color ? `background: ${item.color}` : undefined}>
             {item.imagen && <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />}
             <div class="cartel">
@@ -85,9 +88,9 @@ const items = entradas
       </thead>
       <tbody>
         {items.map((item) => (
-          <tr data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+          <tr data-fecha={item.fecha.toISOString()} data-titulo={item.titulo} data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
             <td><a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a></td>
-            <td>{item.tipo}</td>
+            <td><span class="badge">{item.tipo}</span></td>
             <td>{item.fuente ?? '—'}</td>
             <td>{item.fecha.getFullYear()}</td>
             <td>{item.etiquetas.join(', ')}</td>
@@ -98,6 +101,25 @@ const items = entradas
   </div>
 </Base>
 <style>
+  .buscador-indice {
+    margin: 0.5rem 0 2.25rem;
+  }
+  .buscador-indice input {
+    width: 100%;
+    font-size: 1.7rem;
+    color: #141414;
+    padding: 0.3rem 0 0.75rem;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+    background: none;
+  }
+  .buscador-indice input::placeholder {
+    color: #c4c0b6;
+  }
+  .buscador-indice input:focus {
+    border-bottom-color: var(--acento);
+  }
   .controles-indice {
     display: flex;
     justify-content: space-between;
@@ -251,7 +273,6 @@ const items = entradas
     color: #999;
     font-weight: normal;
   }
-  .tabla td:nth-child(2),
   .tabla td:nth-child(3),
   .tabla td:nth-child(4) {
     font-size: 0.78rem;
@@ -263,6 +284,19 @@ const items = entradas
   }
   .tabla .titulo {
     font-size: 1rem;
+    color: #141414;
+    text-decoration: none;
+  }
+  .tabla .titulo:hover {
+    color: var(--acento);
+  }
+  .tabla .badge {
+    display: inline-block;
+    border: 1px solid #d4d1c9;
+    padding: 0.12rem 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    color: #555;
   }
 
   .indice-vistas[data-vista='grilla'] .tabla {
@@ -332,5 +366,24 @@ const items = entradas
     const rect = marco.getBoundingClientRect();
     marco.style.setProperty('--x', `${e.clientX - rect.left}px`);
     marco.style.setProperty('--y', `${e.clientY - rect.top}px`);
+  });
+
+  const filtro = document.getElementById('filtro') as HTMLInputElement | null;
+  const conteo = document.getElementById('conteo');
+  filtro?.addEventListener('input', () => {
+    const q = filtro.value.trim().toLowerCase();
+    const celdas = contenedorMuro ? (Array.from(contenedorMuro.children) as HTMLElement[]) : [];
+    const filas = contenedorTabla ? (Array.from(contenedorTabla.children) as HTMLElement[]) : [];
+    let visibles = 0;
+    celdas.forEach((el) => {
+      const match = !q || (el.dataset.buscar ?? '').includes(q);
+      el.style.display = match ? '' : 'none';
+      if (match) visibles++;
+    });
+    filas.forEach((el) => {
+      const match = !q || (el.dataset.buscar ?? '').includes(q);
+      el.style.display = match ? '' : 'none';
+    });
+    if (conteo) conteo.textContent = `${visibles} ${visibles === 1 ? 'entrada' : 'entradas'}`;
   });
 </script>
