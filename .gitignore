@@ -3,3 +3,10 @@ dist/
 .astro/
 .env
 .DS_Store
+
+# Obsidian: estado volátil de la interfaz (la config útil sí se versiona)
+contenido/.obsidian/workspace.json
+contenido/.obsidian/workspace-mobile.json
+contenido/.obsidian/workspace
+contenido/.obsidian/cache
+contenido/_adjuntos/
