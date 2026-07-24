@@ -17,7 +17,7 @@ Construcción lenta y por etapas. Nunca intentar resolver todo en una versión. 
 1. Puerta de entrada visual, modelo "índice mixto": la home es un índice donde imágenes y texto conviven, cada entrada con la forma que le corresponde. No es una grilla pura ni una lista de texto pura.
 2. Estética: austeridad tipográfica inspirada en gwern.net. Monocromo, sin decoración. Las fotografías de la autora son el único color del sitio. La página desaparece; la imagen y el texto mandan.
 3. Cinco tipos de contenido: idea, imagen, receta, ingrediente, crónica. Salieron de material real, no de categorías hipotéticas.
-4. El diario no es una sección: es una vista. Todo el contenido ordenado por fecha es el diario. No existe un espacio de escritura diaria separado.
+4. El diario no es una sección: es una vista. Todo el contenido ordenado por fecha es el diario. No existe un espacio de escritura diaria separado. *(Actualización: la vista diario como página separada se eliminó; el índice, ordenado por fecha, cumple ese rol. Ver "Dirección visual".)*
 5. Visibilidad por entrada: cada entrada declara si es privada o pública desde el día uno, aunque en el MVP todo funcione en local. Esto mantiene reversible la decisión público/privado.
 6. Arquitectura en tres capas: entradas (contenido), conexiones (wikilinks, etiquetas, genealogías), vistas (índice, diario, colecciones, grilla, búsqueda). Las vistas nunca contienen contenido propio: son lentes sobre la capa 1.
 7. Las conexiones nacen escribiendo: wikilinks dentro del texto, no formularios de administración de relaciones.
@@ -121,6 +121,17 @@ Antes de escribir CSS, se presenta a la autora una mini propuesta tipográfica (
 
 **Actualizado (sesión de referencias — essesi.com, Are.na, galerie5b.net):** se suma **Fraunces** (itálica) como segunda tipografía para títulos de entrada y nombres de obra — Lora sigue siendo el cuerpo. Se revoca a propósito "sin colores de acento": hay un color de acento (`--acento`, terracota `#9c3b26`) para links y estados interactivos, y un color fijo por tipo de entrada para las conexiones (ver principio 8 del manifiesto). Las imágenes se mantienen sin sombra por decisión explícita, consistente con la regla original.
 
+**Actualizado (migración a la referencia NBK video-forum — rediseño del índice):** la dirección visual se reorienta hacia [nbk.org/en/video-forum](https://www.nbk.org/en/video-forum/sammlung), un archivo de videoarte. Este bloque supersede los dos anteriores en tipografía y color. Cambios:
+
+- **Tipografía:** se reemplazan Lora y Fraunces por **Archivo** (grotesca, autohospedada en `public/fonts/`, regular + itálica). Una sola familia para todo: cuerpo, títulos, metadatos y navegación. La convención de itálica para títulos/nombres de obra (`.obra`) se mantiene, ahora con Archivo itálica. Se retira la monoespaciada de sistema de los metadatos.
+- **Vuelta a monocromo:** se elimina el color de acento bordó (`--acento` pasa de `#9c3b26` a `#141414`). La interfaz queda sin acento de color, reconciliada con el principio 8 original. Los colores fijos por tipo de las conexiones ("mencionada en") se mantienen.
+- **Muro con cartel al hover:** la grilla es de columnas fijas (disciplinada, no masonry — decisión consciente contra "Pinterest"). En reposo se ve solo la imagen; al pasar el mouse aparece un cartel blanco flotante (título, tipo, estado, fecha) que sigue al cursor y puede salirse del cuadrado, como en la referencia. En dispositivos sin hover la info queda accesible desde la entrada.
+- **Entradas sin imagen = cuadrado de color:** para que la grilla sea uniforme, las entradas de solo texto se muestran como un cuadrado de color sólido (hue estable derivado del slug), con el mismo cartel al hover. Reemplaza la miniatura de tamaño variable según `estado`, que se abandona: la grilla ahora es uniforme.
+- **Buscador integrado arriba del índice:** filtra en vivo las entradas (por nombre, formato, etiquetas, fuente) sobre la misma página. Reemplaza la página `/buscar` separada, que se elimina junto con su índice JSON.
+- **Vista de lista alternativa:** toggle grilla/lista (iconos) en una barra de controles mínima con contador de entradas ("N entradas", al estilo del "Found: N" de la referencia). La lista es una tabla: nombre, formato (como badge con borde, estilo "categoría" de NBK), fuente, año, etiquetas.
+- **Se elimina el orden manual por fecha/título:** el índice queda ordenado por fecha (más reciente primero).
+- **Se elimina la vista diario como página separada** (ver punto 4 de "Decisiones ya tomadas"): con el índice ordenado por fecha, la vista cronológica queda absorbida por el propio índice. El menú de navegación queda en solo "índice".
+
 ## Manifiesto de diseño
 
 Surgido de una sesión de dirección conceptual: análisis por familias de referencias (editorial — Apartamento, The Gentlewoman, Kinfolk, Aesop; archivo — Are.na, Internet Archive, Rijksmuseum, Cooper Hewitt, The Met; estudios creativos — OK-RM, Studio Airport, DIA, Common Name; gastronomía con espíritu crítico) para entender principios, no copiar estéticas. Estos diez principios guían las decisiones de diseño, arquitectura y desarrollo de acá en adelante:
@@ -136,10 +147,10 @@ Surgido de una sesión de dirección conceptual: análisis por familias de refer
 9. Se diseña para crecer diez años, no para lanzarse una vez. Cada decisión se pregunta si sigue funcionando con diez veces más contenido.
 10. Nunca debe sentirse como una aplicación. Si en algún momento parece Notion o Pinterest, fallamos.
 
-**Marco mental: "mesa de trabajo", no "página web".** Navegar el archivo debe sentirse como recorrer una mesa donde conviven fotografías, libros abiertos, ingredientes y notas — asociación antes que jerarquía de menú. Esto no se traduce en skeuomorfismo (no se dibuja una mesa); se traduce en que mirar algo te lleve a otra cosa por conexión, no por estructura de carpetas. La miniatura variable del índice según `estado` ya es una primera aplicación de esta idea.
+**Marco mental: "mesa de trabajo", no "página web".** Navegar el archivo debe sentirse como recorrer una mesa donde conviven fotografías, libros abiertos, ingredientes y notas — asociación antes que jerarquía de menú. Esto no se traduce en skeuomorfismo (no se dibuja una mesa); se traduce en que mirar algo te lleve a otra cosa por conexión, no por estructura de carpetas. La grilla uniforme con cartel al hover y el descubrimiento por conexiones (wikilinks, backlinks, etiquetas) son las aplicaciones actuales de esta idea.
 
 **Decisiones derivadas de esta sesión:**
-- El índice se sigue ordenando por fecha por defecto, ordenable a título. No se cambia el mecanismo de "puerta de entrada" por ahora.
+- El índice se ordena por fecha (más reciente primero). El orden manual a título se probó y luego se quitó por simplicidad (ver "Dirección visual"). No se cambia el mecanismo de "puerta de entrada".
 - Productor y libro no se convierten en tipos de contenido nuevos. Siguen como texto libre (`procedencia`, `fuente`) con wikilink informal si hace falta referenciarlos. Se reconsidera si en el uso real aparece la necesidad de citarlos como entradas propias.
 - Referencia Are.na (vista de canal "hypertext club"): se adopta la idea de mostrar las conexiones de una entrada como un grupo de bloques-preview (miniatura + tipo + título) enmarcado, en vez de una lista de texto plana — ver componente `Backlinks`. No se adopta la lógica de canales/colecciones de Are.na en sí (eso sigue siendo el compromiso post-MVP ya anotado).
 
