@@ -22,6 +22,7 @@ const items = entradas
       fecha: e.data.fecha as Date,
       estado: e.data.estado as string,
       etiquetas: (e.data.etiquetas ?? []) as string[],
+      fuente: ((e.data as any).fuente ?? null) as string | null,
       conexiones: conteoBacklinks.get(e.slug) ?? 0,
       imagen,
     };
@@ -47,7 +48,7 @@ const items = entradas
           {item.imagen ? (
             <a class="marco" href={`/${item.tipo}/${item.slug}`}>
               <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
-              <div class="overlay">
+              <div class="cartel">
                 <span class="titulo obra">{item.titulo}</span>
                 <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
                 {item.conexiones > 0 && (
@@ -70,10 +71,10 @@ const items = entradas
     <table class="tabla" id="tabla-indice">
       <thead>
         <tr>
-          <th>título</th>
-          <th>tipo</th>
-          <th>fecha</th>
-          <th>estado</th>
+          <th>nombre</th>
+          <th>formato</th>
+          <th>fuente</th>
+          <th>año</th>
           <th>etiquetas</th>
         </tr>
       </thead>
@@ -82,8 +83,8 @@ const items = entradas
           <tr data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
             <td><a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a></td>
             <td>{item.tipo}</td>
-            <td>{formatearFecha(item.fecha)}</td>
-            <td>{item.estado}</td>
+            <td>{item.fuente ?? '—'}</td>
+            <td>{item.fecha.getFullYear()}</td>
             <td>{item.etiquetas.join(', ')}</td>
           </tr>
         ))}
@@ -147,6 +148,8 @@ const items = entradas
     width: 100%;
     aspect-ratio: 1 / 1;
     overflow: hidden;
+    --x: 50%;
+    --y: 50%;
   }
   .marco img {
     width: 100%;
@@ -154,34 +157,41 @@ const items = entradas
     object-fit: cover;
     display: block;
   }
-  .overlay {
+  .cartel {
     position: absolute;
-    inset: 0;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    gap: 0.25rem;
-    padding: 0.7rem 0.6rem;
-    background: linear-gradient(to top, rgba(20, 20, 20, 0.72) 0%, rgba(20, 20, 20, 0.32) 55%, rgba(20, 20, 20, 0) 100%);
-    color: #fff;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.5rem 0.85rem;
+    background: #fff;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+    pointer-events: none;
   }
-  .overlay .titulo {
-    color: #fff;
-    font-size: 0.95rem;
+  .cartel .titulo {
+    color: #141414;
+    font-size: 0.85rem;
   }
-  .overlay .ficha {
-    color: rgba(255, 255, 255, 0.8);
+  .cartel .ficha {
+    color: #999;
+    font-size: 0.68rem;
   }
-  .overlay .conexiones {
-    color: rgba(255, 255, 255, 0.65);
+  .cartel .conexiones {
+    color: #b0aca2;
+    font-size: 0.65rem;
   }
   @media (hover: hover) {
-    .overlay {
+    .cartel {
       opacity: 0;
-      transition: opacity 0.15s ease;
+      transition: opacity 0.1s ease;
     }
-    .marco:hover .overlay,
-    .marco:focus-visible .overlay {
+    .marco:hover .cartel,
+    .marco:focus-visible .cartel {
       opacity: 1;
     }
   }
@@ -306,5 +316,22 @@ const items = entradas
       botonesVista.forEach((b) => b.classList.remove('activo'));
       boton.classList.add('activo');
     });
+  });
+
+  contenedorMuro?.addEventListener('mousemove', (e) => {
+    const marco = (e.target as HTMLElement).closest('.marco') as HTMLElement | null;
+    if (!marco) return;
+    const cartel = marco.querySelector('.cartel') as HTMLElement | null;
+    const rect = marco.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    if (cartel) {
+      const mitadAncho = cartel.offsetWidth / 2;
+      const mitadAlto = cartel.offsetHeight / 2;
+      x = Math.min(Math.max(x, mitadAncho), rect.width - mitadAncho);
+      y = Math.min(Math.max(y, mitadAlto), rect.height - mitadAlto);
+    }
+    marco.style.setProperty('--x', `${x}px`);
+    marco.style.setProperty('--y', `${y}px`);
   });
 </script>
