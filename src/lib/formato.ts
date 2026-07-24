@@ -1,5 +1,6 @@
 export function formatearFecha(fecha: Date): string {
-  return fecha.toISOString().slice(0, 10);
+  // guion no separable: evita que la fecha corte de línea a mitad (p. ej. en celdas angostas del muro)
+  return fecha.toISOString().slice(0, 10).replace(/-/g, '‑');
 }
 
 /** Las entradas guardan rutas de imagen relativas a /media (ver frontmatter). */
