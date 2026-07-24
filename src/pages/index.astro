@@ -39,14 +39,21 @@ const items = entradas
 ---
 <Base titulo="índice">
   <div class="controles-indice">
-    <div class="orden">
-      <span>ordenar por</span>
-      <button type="button" data-orden="fecha" class="activo">fecha</button>
-      <button type="button" data-orden="titulo">título</button>
-    </div>
-    <div class="vista">
-      <button type="button" data-vista="grilla" class="activo">grilla</button>
-      <button type="button" data-vista="lista">lista</button>
+    <span class="conteo">{items.length} entradas</span>
+    <div class="acciones">
+      <div class="orden">
+        <button type="button" data-orden="fecha" class="activo">fecha</button>
+        <span class="sep">·</span>
+        <button type="button" data-orden="titulo">título</button>
+      </div>
+      <div class="vista">
+        <button type="button" data-vista="grilla" class="activo" aria-label="ver en grilla">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        </button>
+        <button type="button" data-vista="lista" aria-label="ver en lista">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/></svg>
+        </button>
+      </div>
     </div>
   </div>
   <div class="indice-vistas" id="indice-vistas" data-vista="grilla">
@@ -94,28 +101,59 @@ const items = entradas
   .controles-indice {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    font-size: 0.8rem;
-    color: #777;
+    align-items: center;
+    font-size: 0.78rem;
+    color: #999;
     margin-bottom: 3rem;
   }
-  .controles-indice button {
+  .conteo {
+    letter-spacing: 0.02em;
+  }
+  .acciones {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+  .orden {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .orden button {
     font: inherit;
     background: none;
     border: none;
-    color: #777;
+    color: #999;
     cursor: pointer;
-    padding: 0 0.3rem;
-    text-decoration: underline;
+    padding: 0;
   }
-  .controles-indice button.activo {
+  .orden button:hover {
+    color: #141414;
+  }
+  .orden button.activo {
     color: var(--acento);
-    text-decoration: none;
-    font-weight: 600;
+  }
+  .orden .sep {
+    color: #ccc;
   }
   .vista {
     display: flex;
-    gap: 0.25rem;
+    gap: 0.6rem;
+  }
+  .vista button {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  .vista button:hover {
+    color: #999;
+  }
+  .vista button.activo {
+    color: #141414;
   }
 
   /* --- vista grilla (muro) --- */
@@ -241,9 +279,8 @@ const items = entradas
   }
   @media (max-width: 40rem) {
     .controles-indice {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.6rem;
+      flex-wrap: wrap;
+      gap: 0.9rem 1.25rem;
     }
     .muro {
       grid-template-columns: repeat(auto-fill, 7.5rem);
