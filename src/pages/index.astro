@@ -12,6 +12,13 @@ for (const e of entradas) {
   }
 }
 
+// Color sólido estable por entrada, para las celdas sin imagen (hue "al azar" derivado del slug).
+function colorDeSlug(slug: string): string {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) % 360;
+  return `hsl(${h}, 52%, 58%)`;
+}
+
 const items = entradas
   .map((e) => {
     const imagen = e.data.archivo ?? e.data.imagenes?.[0] ?? null;
@@ -25,6 +32,7 @@ const items = entradas
       fuente: ((e.data as any).fuente ?? null) as string | null,
       conexiones: conteoBacklinks.get(e.slug) ?? 0,
       imagen,
+      color: imagen ? null : colorDeSlug(e.slug),
     };
   })
   .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
@@ -44,27 +52,17 @@ const items = entradas
   <div class="indice-vistas" id="indice-vistas" data-vista="grilla">
     <ul class="muro" id="indice">
       {items.map((item) => (
-        <li class:list={['celda', item.imagen ? 'imagen' : 'nota']} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
-          {item.imagen ? (
-            <a class="marco" href={`/${item.tipo}/${item.slug}`}>
-              <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
-              <div class="cartel">
-                <span class="titulo obra">{item.titulo}</span>
-                <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
-                {item.conexiones > 0 && (
-                  <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
-                )}
-              </div>
-            </a>
-          ) : (
-            <div class="contenido">
-              <a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+        <li class="celda" data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+          <a class="marco" href={`/${item.tipo}/${item.slug}`} style={item.color ? `background: ${item.color}` : undefined}>
+            {item.imagen && <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />}
+            <div class="cartel">
+              <span class="titulo obra">{item.titulo}</span>
               <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
               {item.conexiones > 0 && (
                 <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
               )}
             </div>
-          )}
+          </a>
         </li>
       ))}
     </ul>
@@ -137,19 +135,17 @@ const items = entradas
     flex-direction: column;
     gap: 0.6rem;
   }
-  .celda.nota {
-    justify-content: flex-end;
-    border-top: 1px solid #e8e6e1;
-    padding-top: 1.5rem;
-  }
   .marco {
     position: relative;
     display: block;
     width: 100%;
     aspect-ratio: 1 / 1;
-    overflow: hidden;
     --x: 50%;
     --y: 50%;
+  }
+  .marco:hover,
+  .marco:focus-visible {
+    z-index: 5;
   }
   .marco img {
     width: 100%;
@@ -185,6 +181,9 @@ const items = entradas
     color: #b0aca2;
     font-size: 0.65rem;
   }
+  .cartel .conexiones::before {
+    content: '⌁ ';
+  }
   @media (hover: hover) {
     .cartel {
       opacity: 0;
@@ -195,34 +194,6 @@ const items = entradas
       opacity: 1;
     }
   }
-  .contenido {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    min-width: 0;
-  }
-  .titulo {
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: #141414;
-    text-decoration: none;
-  }
-  .titulo:hover {
-    text-decoration: underline;
-  }
-  .ficha {
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
-    color: #999;
-  }
-  .conexiones {
-    font-size: 0.7rem;
-    color: #b0aca2;
-  }
-  .conexiones::before {
-    content: '⌁ ';
-  }
-
   /* --- vista lista (tabla) --- */
   .tabla {
     width: 100%;
@@ -321,17 +292,8 @@ const items = entradas
   contenedorMuro?.addEventListener('mousemove', (e) => {
     const marco = (e.target as HTMLElement).closest('.marco') as HTMLElement | null;
     if (!marco) return;
-    const cartel = marco.querySelector('.cartel') as HTMLElement | null;
     const rect = marco.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    if (cartel) {
-      const mitadAncho = cartel.offsetWidth / 2;
-      const mitadAlto = cartel.offsetHeight / 2;
-      x = Math.min(Math.max(x, mitadAncho), rect.width - mitadAncho);
-      y = Math.min(Math.max(y, mitadAlto), rect.height - mitadAlto);
-    }
-    marco.style.setProperty('--x', `${x}px`);
-    marco.style.setProperty('--y', `${y}px`);
+    marco.style.setProperty('--x', `${e.clientX - rect.left}px`);
+    marco.style.setProperty('--y', `${e.clientY - rect.top}px`);
   });
 </script>
