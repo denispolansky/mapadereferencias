@@ -26,32 +26,18 @@ const ruta = Astro.url.pathname;
     </main>
     <style is:global>
       @font-face {
-        font-family: 'Lora';
+        font-family: 'Archivo';
         font-style: normal;
         font-weight: 400 700;
         font-display: swap;
-        src: url('/fonts/lora-variable.woff2') format('woff2');
+        src: url('/fonts/archivo-variable.woff2') format('woff2');
       }
       @font-face {
-        font-family: 'Lora';
+        font-family: 'Archivo';
         font-style: italic;
         font-weight: 400 700;
         font-display: swap;
-        src: url('/fonts/lora-italic.woff2') format('woff2');
-      }
-      @font-face {
-        font-family: 'Fraunces';
-        font-style: normal;
-        font-weight: 400 700;
-        font-display: swap;
-        src: url('/fonts/fraunces-variable.woff2') format('woff2');
-      }
-      @font-face {
-        font-family: 'Fraunces';
-        font-style: italic;
-        font-weight: 400 700;
-        font-display: swap;
-        src: url('/fonts/fraunces-italic.woff2') format('woff2');
+        src: url('/fonts/archivo-italic.woff2') format('woff2');
       }
       :root {
         --acento: #9c3b26;
@@ -60,14 +46,14 @@ const ruta = Astro.url.pathname;
       html { -webkit-text-size-adjust: 100%; }
       body {
         margin: 0;
-        font-family: 'Lora', Georgia, 'Times New Roman', serif;
-        font-size: 1.125rem;
+        font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 1.1rem;
         color: #141414;
         background: #fff;
-        line-height: 1.65;
+        line-height: 1.6;
       }
       .obra {
-        font-family: 'Fraunces', 'Lora', serif;
+        font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-style: italic;
       }
       .cabecera {
