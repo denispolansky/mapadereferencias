@@ -43,26 +43,19 @@ const items = entradas
   </div>
   <div class="controles-indice">
     <span class="conteo" id="conteo">{items.length} entradas</span>
-    <div class="acciones">
-      <div class="orden">
-        <button type="button" data-orden="fecha" class="activo">fecha</button>
-        <span class="sep">·</span>
-        <button type="button" data-orden="titulo">título</button>
-      </div>
-      <div class="vista">
-        <button type="button" data-vista="grilla" class="activo" aria-label="ver en grilla">
-          <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
-        </button>
-        <button type="button" data-vista="lista" aria-label="ver en lista">
-          <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/></svg>
-        </button>
-      </div>
+    <div class="vista">
+      <button type="button" data-vista="grilla" class="activo" aria-label="ver en grilla">
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+      </button>
+      <button type="button" data-vista="lista" aria-label="ver en lista">
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/></svg>
+      </button>
     </div>
   </div>
   <div class="indice-vistas" id="indice-vistas" data-vista="grilla">
     <ul class="muro" id="indice">
       {items.map((item) => (
-        <li class="celda" data-fecha={item.fecha.toISOString()} data-titulo={item.titulo} data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
+        <li class="celda" data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
           <a class="marco" href={`/${item.tipo}/${item.slug}`} style={item.color ? `background: ${item.color}` : undefined}>
             {item.imagen && <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />}
             <div class="cartel">
@@ -88,7 +81,7 @@ const items = entradas
       </thead>
       <tbody>
         {items.map((item) => (
-          <tr data-fecha={item.fecha.toISOString()} data-titulo={item.titulo} data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
+          <tr data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
             <td><a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a></td>
             <td><span class="badge">{item.tipo}</span></td>
             <td>{item.fuente ?? '—'}</td>
@@ -106,9 +99,9 @@ const items = entradas
   }
   .buscador-indice input {
     width: 100%;
-    font-size: 1.7rem;
+    font-size: 1.25rem;
     color: #141414;
-    padding: 0.3rem 0 0.75rem;
+    padding: 0.3rem 0 0.6rem;
     border: none;
     border-bottom: 1px solid #ddd;
     outline: none;
@@ -130,33 +123,6 @@ const items = entradas
   }
   .conteo {
     letter-spacing: 0.02em;
-  }
-  .acciones {
-    display: flex;
-    align-items: center;
-    gap: 1.75rem;
-  }
-  .orden {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .orden button {
-    font: inherit;
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    padding: 0;
-  }
-  .orden button:hover {
-    color: #141414;
-  }
-  .orden button.activo {
-    color: var(--acento);
-  }
-  .orden .sep {
-    color: #ccc;
   }
   .vista {
     display: flex;
@@ -327,29 +293,7 @@ const items = entradas
   const contenedorMuro = document.getElementById('indice');
   const contenedorTabla = document.querySelector('#tabla-indice tbody');
   const indiceVistas = document.getElementById('indice-vistas');
-  const botonesOrden = document.querySelectorAll('.orden button');
   const botonesVista = document.querySelectorAll('.vista button');
-
-  function ordenar(contenedor: Element, orden: string | null) {
-    const items = Array.from(contenedor.children) as HTMLElement[];
-    items.sort((a, b) => {
-      if (orden === 'titulo') {
-        return (a.dataset.titulo ?? '').localeCompare(b.dataset.titulo ?? '');
-      }
-      return (b.dataset.fecha ?? '').localeCompare(a.dataset.fecha ?? '');
-    });
-    items.forEach((item) => contenedor.appendChild(item));
-  }
-
-  botonesOrden.forEach((boton) => {
-    boton.addEventListener('click', () => {
-      const orden = boton.getAttribute('data-orden');
-      if (contenedorMuro) ordenar(contenedorMuro, orden);
-      if (contenedorTabla) ordenar(contenedorTabla, orden);
-      botonesOrden.forEach((b) => b.classList.remove('activo'));
-      boton.classList.add('activo');
-    });
-  });
 
   botonesVista.forEach((boton) => {
     boton.addEventListener('click', () => {

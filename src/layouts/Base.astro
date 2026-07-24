@@ -17,8 +17,6 @@ const ruta = Astro.url.pathname;
       <a class="marca" href="/">archivo vivo</a>
       <nav>
         <a href="/" aria-current={ruta === '/' ? 'page' : undefined}>índice</a>
-        <a href="/diario" aria-current={ruta === '/diario' ? 'page' : undefined}>diario</a>
-        <a href="/buscar" aria-current={ruta === '/buscar' ? 'page' : undefined}>buscar</a>
       </nav>
     </header>
     <main>
@@ -40,7 +38,7 @@ const ruta = Astro.url.pathname;
         src: url('/fonts/archivo-italic.woff2') format('woff2');
       }
       :root {
-        --acento: #9c3b26;
+        --acento: #141414;
       }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
