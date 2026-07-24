@@ -21,6 +21,7 @@ const items = entradas
       titulo: e.data.titulo,
       fecha: e.data.fecha as Date,
       estado: e.data.estado as string,
+      etiquetas: (e.data.etiquetas ?? []) as string[],
       conexiones: conteoBacklinks.get(e.slug) ?? 0,
       imagen,
     };
@@ -29,31 +30,72 @@ const items = entradas
 ---
 <Base titulo="índice">
   <div class="controles-indice">
-    <span>ordenar por</span>
-    <button type="button" data-orden="fecha" class="activo">fecha</button>
-    <button type="button" data-orden="titulo">título</button>
+    <div class="orden">
+      <span>ordenar por</span>
+      <button type="button" data-orden="fecha" class="activo">fecha</button>
+      <button type="button" data-orden="titulo">título</button>
+    </div>
+    <div class="vista">
+      <button type="button" data-vista="grilla" class="activo">grilla</button>
+      <button type="button" data-vista="lista">lista</button>
+    </div>
   </div>
-  <ul class="muro" id="indice">
-    {items.map((item) => (
-      <li class:list={['celda', item.imagen ? 'imagen' : 'nota']} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
-        {item.imagen && (
-          <a class="marco" href={`/${item.tipo}/${item.slug}`}>
-            <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
-          </a>
-        )}
-        <div class="contenido">
-          <a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
-          <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
-          {item.conexiones > 0 && (
-            <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+  <div class="indice-vistas" id="indice-vistas" data-vista="grilla">
+    <ul class="muro" id="indice">
+      {items.map((item) => (
+        <li class:list={['celda', item.imagen ? 'imagen' : 'nota']} data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+          {item.imagen ? (
+            <a class="marco" href={`/${item.tipo}/${item.slug}`}>
+              <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />
+              <div class="overlay">
+                <span class="titulo obra">{item.titulo}</span>
+                <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
+                {item.conexiones > 0 && (
+                  <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+                )}
+              </div>
+            </a>
+          ) : (
+            <div class="contenido">
+              <a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a>
+              <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
+              {item.conexiones > 0 && (
+                <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+              )}
+            </div>
           )}
-        </div>
-      </li>
-    ))}
-  </ul>
+        </li>
+      ))}
+    </ul>
+    <table class="tabla" id="tabla-indice">
+      <thead>
+        <tr>
+          <th>título</th>
+          <th>tipo</th>
+          <th>fecha</th>
+          <th>estado</th>
+          <th>etiquetas</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item) => (
+          <tr data-fecha={item.fecha.toISOString()} data-titulo={item.titulo}>
+            <td><a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a></td>
+            <td>{item.tipo}</td>
+            <td>{formatearFecha(item.fecha)}</td>
+            <td>{item.estado}</td>
+            <td>{item.etiquetas.join(', ')}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 </Base>
 <style>
   .controles-indice {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
     font-family: ui-monospace, monospace;
     font-size: 0.8rem;
     color: #777;
@@ -73,6 +115,12 @@ const items = entradas
     text-decoration: none;
     font-weight: 600;
   }
+  .vista {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  /* --- vista grilla (muro) --- */
   .muro {
     list-style: none;
     margin: 0;
@@ -82,7 +130,7 @@ const items = entradas
     justify-content: space-between;
     grid-auto-flow: row dense;
     column-gap: 2.5rem;
-    row-gap: 8rem;
+    row-gap: 4rem;
   }
   .celda {
     display: flex;
@@ -95,6 +143,7 @@ const items = entradas
     padding-top: 1.5rem;
   }
   .marco {
+    position: relative;
     display: block;
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -104,6 +153,38 @@ const items = entradas
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    padding: 0.7rem 0.6rem;
+    background: linear-gradient(to top, rgba(20, 20, 20, 0.72) 0%, rgba(20, 20, 20, 0.32) 55%, rgba(20, 20, 20, 0) 100%);
+    color: #fff;
+  }
+  .overlay .titulo {
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  .overlay .ficha {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .overlay .conexiones {
+    color: rgba(255, 255, 255, 0.65);
+  }
+  @media (hover: hover) {
+    .overlay {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .marco:hover .overlay,
+    .marco:focus-visible .overlay {
+      opacity: 1;
+    }
   }
   .contenido {
     display: flex;
@@ -134,37 +215,102 @@ const items = entradas
   .conexiones::before {
     content: '⌁ ';
   }
+
+  /* --- vista lista (tabla) --- */
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .tabla th,
+  .tabla td {
+    text-align: left;
+    padding: 0.6rem 1rem 0.6rem 0;
+    border-bottom: 1px solid #e8e6e1;
+  }
+  .tabla th {
+    font-family: ui-monospace, monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #999;
+    font-weight: normal;
+  }
+  .tabla td:nth-child(2),
+  .tabla td:nth-child(3),
+  .tabla td:nth-child(4) {
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    color: #777;
+  }
+  .tabla td:last-child {
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    color: #999;
+  }
+  .tabla .titulo {
+    font-size: 1rem;
+  }
+
+  .indice-vistas[data-vista='grilla'] .tabla {
+    display: none;
+  }
+  .indice-vistas[data-vista='lista'] .muro {
+    display: none;
+  }
+
   @media (max-width: 65rem) {
     .muro {
-      row-gap: 5rem;
+      row-gap: 3rem;
     }
   }
   @media (max-width: 40rem) {
+    .controles-indice {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
     .muro {
       grid-template-columns: repeat(auto-fill, 7.5rem);
       column-gap: 1.5rem;
-      row-gap: 3rem;
+      row-gap: 2.5rem;
     }
   }
 </style>
 <script>
-  const contenedor = document.getElementById('indice');
-  const botones = document.querySelectorAll('.controles-indice button');
-  if (contenedor) {
-    botones.forEach((boton) => {
-      boton.addEventListener('click', () => {
-        const orden = boton.getAttribute('data-orden');
-        const items = Array.from(contenedor.children) as HTMLElement[];
-        items.sort((a, b) => {
-          if (orden === 'titulo') {
-            return (a.dataset.titulo ?? '').localeCompare(b.dataset.titulo ?? '');
-          }
-          return (b.dataset.fecha ?? '').localeCompare(a.dataset.fecha ?? '');
-        });
-        items.forEach((item) => contenedor.appendChild(item));
-        botones.forEach((b) => b.classList.remove('activo'));
-        boton.classList.add('activo');
-      });
+  const contenedorMuro = document.getElementById('indice');
+  const contenedorTabla = document.querySelector('#tabla-indice tbody');
+  const indiceVistas = document.getElementById('indice-vistas');
+  const botonesOrden = document.querySelectorAll('.orden button');
+  const botonesVista = document.querySelectorAll('.vista button');
+
+  function ordenar(contenedor: Element, orden: string | null) {
+    const items = Array.from(contenedor.children) as HTMLElement[];
+    items.sort((a, b) => {
+      if (orden === 'titulo') {
+        return (a.dataset.titulo ?? '').localeCompare(b.dataset.titulo ?? '');
+      }
+      return (b.dataset.fecha ?? '').localeCompare(a.dataset.fecha ?? '');
     });
+    items.forEach((item) => contenedor.appendChild(item));
   }
+
+  botonesOrden.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      const orden = boton.getAttribute('data-orden');
+      if (contenedorMuro) ordenar(contenedorMuro, orden);
+      if (contenedorTabla) ordenar(contenedorTabla, orden);
+      botonesOrden.forEach((b) => b.classList.remove('activo'));
+      boton.classList.add('activo');
+    });
+  });
+
+  botonesVista.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      const vista = boton.getAttribute('data-vista');
+      if (indiceVistas && vista) indiceVistas.setAttribute('data-vista', vista);
+      botonesVista.forEach((b) => b.classList.remove('activo'));
+      boton.classList.add('activo');
+    });
+  });
 </script>
