@@ -15,7 +15,7 @@ imagenes:
 ---
 Repollo quemado con caramelo de tomate y lardo. 
 
-La referencia era queso azul y meremelada de durazno. 
+La referencia era queso azul y mermelada de durazno. 
 
 
 Referencia del Ig de @Jay_Wolman 
