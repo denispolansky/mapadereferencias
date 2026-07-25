@@ -1,5 +1,6 @@
 ---
 import { formatearFecha } from '../lib/formato';
+import { slugificar } from '../lib/slugs';
 
 interface Props {
   data: Record<string, any>;
@@ -12,7 +13,7 @@ const { data } = Astro.props;
   <div><dt>modificado</dt><dd>{formatearFecha(data.modificado)}</dd></div>
   <div><dt>estado</dt><dd>{data.estado}</dd></div>
   <div><dt>visibilidad</dt><dd>{data.visibilidad}</dd></div>
-  {data.tipo === 'receta' && (
+  {data.tipo === 'receta' && data.probada != null && (
     <div><dt>probada</dt><dd>{data.probada} {data.probada === 1 ? 'vez' : 'veces'}</dd></div>
   )}
   {data.tipo === 'receta' && data['ultima-prueba'] && (
@@ -46,7 +47,7 @@ const { data } = Astro.props;
     <div>
       <dt>etiquetas</dt>
       <dd>
-        {data.etiquetas.map((e: string) => <a class="etiqueta" href={`/etiqueta/${e}`}>{e}</a>)}
+        {data.etiquetas.map((e: string) => <a class="etiqueta" href={`/etiqueta/${slugificar(e)}`}>{e.trim()}</a>)}
       </dd>
     </div>
   )}

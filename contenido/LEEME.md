@@ -1,105 +1,71 @@
-# Cómo agregar entradas al archivo (con Obsidian)
+# Cómo agregar entradas al archivo
 
-Esta carpeta (`contenido/`) es el archivo. Cada entrada es un archivo de texto.
-No hay botón de "subir": escribís un archivo y eso *es* la entrada. Obsidian es
-sólo un editor cómodo por encima de estos archivos — el sitio lee exactamente lo
-mismo que ves acá.
+Regla general: **escribí como te salga.** El sitio se adapta a la nota, no al
+revés. Nada de lo que sigue es obligatorio; si algo falta, se completa solo.
 
-## Abrir el vault
+## Lo mínimo que hay que hacer
 
-En Obsidian: **Open folder as vault** → elegí esta carpeta `contenido`.
-(No abras la carpeta del proyecto entera; sólo `contenido`.)
+1. Creá una nota dentro de la carpeta del tipo que corresponda: `ideas/`,
+   `imagenes/`, `recetas/`, `ingredientes/` o `cronicas/`.
+2. Escribí.
 
-La primera vez, andá a **Settings → Core plugins** y asegurate de que
-**Templates** esté encendido. La configuración de la carpeta de plantillas y de
-los `[[wikilinks]]` ya viene lista.
+Eso es todo. Una nota con solo texto ya es una entrada válida y aparece en el
+índice.
 
-## La regla de oro: el nombre del archivo es el "slug"
+## Lo que se completa solo
 
-El nombre del archivo (sin `.md`) es el identificador de la entrada y lo que va
-en los wikilinks y en la URL. Por eso:
+- **El título** sale del nombre del archivo, si no ponés uno.
+- **El tipo** sale de la carpeta donde está la nota. Si movés una nota de
+  `ideas/` a `recetas/`, pasa a ser receta. No hay que tocar nada más.
+- **La fecha** es la del archivo, si no declarás otra.
+- **El estado** es `semilla` si no decís lo contrario.
+- **La visibilidad** es `privada` si no decís lo contrario.
 
-- **Nombralo en minúsculas, con guiones, sin espacios ni acentos.**
-  Ej: `strudel-de-manzana.md`, `repollo-de-otono.md`, `trama-de-vestido.md`.
-- El título "lindo" (con mayúsculas, acentos, lo que quieras) va **adentro**, en
-  el campo `titulo:`. Eso es lo que se muestra.
-- No repitas el mismo nombre de archivo en dos carpetas distintas: los slugs son
-  únicos en todo el archivo.
+Podés nombrar las notas como quieras: "Repollo asado.md" funciona igual que
+"repollo-asado.md" (la dirección web se ordena sola).
 
-## Crear una entrada
+## Imágenes: arrastrá y listo
 
-1. Entrá a la carpeta del tipo que corresponda: `ideas/`, `imagenes/`,
-   `recetas/`, `ingredientes/` o `cronicas/`.
-2. Creá una nota nueva ahí y nombrala con el slug (ver regla de oro).
-3. Con la nota vacía abierta: **Cmd/Ctrl+P → "Templates: Insert template"** y
-   elegí la plantilla del tipo. Se completa el encabezado con la fecha de hoy.
-4. Rellená los campos y escribí el cuerpo debajo del bloque `---`.
+Arrastrá la foto sobre el cuerpo de la nota. Obsidian la guarda e inserta una
+línea `![[foto.jpg]]`. **Dejala ahí** — el sitio la muestra en ese mismo lugar
+del texto. No hay que copiar el nombre a ningún lado.
 
-Los cinco tipos: **idea, imagen, receta, ingrediente, crónica**. Cada uno tiene
-su plantilla en `_plantillas/`.
+Si querés que una foto salga arriba de todo, como imagen principal, en vez de
+en medio del texto, ponela en el encabezado: `imagenes: ["foto.jpg"]`. Pero no
+hace falta: si no lo hacés, la primera foto del cuerpo se usa igual como
+miniatura en el índice.
 
-## Conectar entradas (wikilinks)
+## Conectar entradas
 
-Escribí `[[` y Obsidian te autocompleta con las entradas existentes. Funciona
-igual en el sitio: se convierte en un enlace, y la entrada enlazada muestra al
-pie "mencionada en" con quién la nombró.
+Escribí `[[` y Obsidian te autocompleta. En el sitio se convierte en un enlace,
+y la entrada enlazada muestra al pie "mencionada en" con quién la nombró.
 
-- `[[strudel-de-manzana]]` → enlace usando el slug.
-- `[[strudel-de-manzana|el strudel de la abuela]]` → enlace con texto visible
-  distinto.
+- `[[Repollo asado]]` — funciona escrito tal cual, con mayúsculas y espacios.
+- `[[Repollo asado|ese repollo quemado]]` — enlace con otro texto visible.
 
-Si el slug todavía no existe, en el sitio aparece en gris (enlace "roto") hasta
-que crees esa entrada. Es una forma válida de dejar semillas.
+Si la entrada todavía no existe, queda en gris hasta que la crees. Es una forma
+válida de dejar semillas.
 
-## Imágenes
+## Si querés precisar más
 
-Ahora podés arrastrar la foto directamente adentro de Obsidian, en la misma
-nota — no hace falta salir a Finder. Dentro del vault hay una carpeta `media`
-(se ve como una carpeta más, aunque en realidad es un atajo a la carpeta real
-del proyecto) y Obsidian ya está configurado para guardar ahí cualquier archivo
-que sueltes.
+Todos estos campos son opcionales. Se escriben en el encabezado (el bloque
+entre `---` de arriba de todo), y Obsidian los muestra como "Propiedades":
 
-El flujo:
+- `titulo` — si querés uno distinto al nombre del archivo.
+- `etiquetas` — lista; cada una genera su página (`/etiqueta/dulce`).
+- `estado` — `semilla`, `en-desarrollo` o `estable`.
+- `fuente` — de dónde salió (libro, sitio, persona, cuenta de Instagram).
+- `origen` — `propia` o `ajena` / `encontrada`.
+- `nota` — por qué la guardaste.
+- `lugar`, `procedencia`, `variedades`, `tecnicas`, `probada` — según el tipo.
 
-1. Arrastrá la imagen (o pegala) directamente sobre la nota. Obsidian la copia
-   a `media/` y te inserta automáticamente una línea como
-   `![[2026-07-24-repollo.jpg]]` en el cuerpo.
-2. **Borrá esa línea insertada** — el cuerpo es para texto, no para la imagen
-   en sí. El sitio no la usa desde ahí.
-3. En cambio, copiá **el mismo nombre de archivo** al encabezado:
-   - tipo **imagen**: `archivo: "2026-07-24-repollo.jpg"`
-   - los demás tipos: `imagenes: ["2026-07-24-repollo.jpg"]`
+Un error de tipeo acá no rompe nada: si un campo no se entiende, se ignora y la
+entrada se publica igual.
 
-Es decir: la imagen vive en un solo lugar (la carpeta `media`, adentro del
-vault), pero el sitio la muestra porque está *nombrada* en el encabezado, no
-porque esté incrustada en el texto. Si renombrás el archivo dentro de
-Obsidian, acordate de actualizar el nombre también en el encabezado.
+## Publicar los cambios
 
-## Etiquetas
-
-En el campo `etiquetas`, como lista: `etiquetas: ["dulce", "otoño"]`.
-Cada etiqueta genera su propia página (`/etiqueta/dulce`).
-
-## Campos rápidos
-
-- `estado`: `semilla` (idea cruda) · `en-desarrollo` · `estable`. Todo tiene
-  derecho a existir desde `semilla`.
-- `visibilidad`: `privada` o `publica`. Por ahora todo corre en privado; el
-  campo mantiene la decisión lista para cuando publiquemos.
-- `fecha`: cuándo la creaste (la pone la plantilla).
-- `modificado`: actualizala cuando edites en serio la entrada.
-
-## Ver el resultado
-
-En una terminal, dentro del proyecto: `npm run dev`, y abrí
-`http://localhost:4321`. Se actualiza solo mientras escribís.
-Si no querés tocar la terminal, escribí tranquila en Obsidian y pedime que lo
-levante o lo publique.
-
-## Guardar en el archivo (git)
-
-Escribir en Obsidian guarda el archivo en tu disco. Para que quede versionado en
-la historia del archivo (y, más adelante, publicado), hay que hacer un "commit".
-Por ahora, cuando tengas un puñado de entradas listas, avisame y lo subo yo. Si
-te querés animar sola: `git add .` → `git commit -m "nuevas entradas"` →
-`git push`.
+Escribir en Obsidian guarda la nota en tu computadora. Para que entre al
+archivo (versionado, con historia), hay que subirla. Con **GitHub Desktop**:
+mirás la lista de cambios, escribís cualquier frase en el cuadro de abajo,
+**Commit**, y después **Push**. No hace falta hacerlo por cada nota: podés
+escribir toda la semana y subir todo junto una vez.

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getTodasLasEntradas, extraerSlugsReferenciados } from '../lib/entradas';
+import { getTodasLasEntradas, extraerSlugsReferenciados, miniaturaDe } from '../lib/entradas';
 import { formatearFecha, rutaMedia } from '../lib/formato';
 
 const entradas = await getTodasLasEntradas();
@@ -21,7 +21,7 @@ function colorDeSlug(slug: string): string {
 
 const items = entradas
   .map((e) => {
-    const imagen = e.data.archivo ?? e.data.imagenes?.[0] ?? null;
+    const imagen = miniaturaDe(e);
     return {
       slug: e.slug,
       tipo: e.tipo,

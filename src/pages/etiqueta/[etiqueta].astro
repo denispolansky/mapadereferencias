@@ -1,21 +1,26 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getTodasLasEntradas } from '../../lib/entradas';
+import { slugificar } from '../../lib/slugs';
 import { formatearFecha, extracto } from '../../lib/formato';
 
 export async function getStaticPaths() {
   const entradas = await getTodasLasEntradas();
-  const porEtiqueta = new Map<string, typeof entradas>();
+  // Se agrupa por etiqueta slugificada, así "Repollo" y "repollo " son la misma.
+  type Grupo = { nombre: string; entradas: typeof entradas };
+  const porEtiqueta = new Map<string, Grupo>();
   for (const entrada of entradas) {
     for (const etiqueta of entrada.data.etiquetas ?? []) {
-      const lista = porEtiqueta.get(etiqueta) ?? [];
-      lista.push(entrada);
-      porEtiqueta.set(etiqueta, lista);
+      const clave = slugificar(etiqueta);
+      if (!clave) continue;
+      const grupo: Grupo = porEtiqueta.get(clave) ?? { nombre: etiqueta.trim(), entradas: [] };
+      grupo.entradas.push(entrada);
+      porEtiqueta.set(clave, grupo);
     }
   }
-  return [...porEtiqueta.entries()].map(([etiqueta, entradas]) => ({
-    params: { etiqueta },
-    props: { etiqueta, entradas },
+  return [...porEtiqueta.entries()].map(([clave, grupo]) => ({
+    params: { etiqueta: clave },
+    props: { etiqueta: grupo.nombre, entradas: grupo.entradas },
   }));
 }
 
