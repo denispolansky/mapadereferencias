@@ -53,17 +53,27 @@ que crees esa entrada. Es una forma válida de dejar semillas.
 
 ## Imágenes
 
-Las imágenes **no** van dentro de Obsidian: van en la carpeta `media/` del
-proyecto (al lado de `contenido/`). El flujo:
+Ahora podés arrastrar la foto directamente adentro de Obsidian, en la misma
+nota — no hace falta salir a Finder. Dentro del vault hay una carpeta `media`
+(se ve como una carpeta más, aunque en realidad es un atajo a la carpeta real
+del proyecto) y Obsidian ya está configurado para guardar ahí cualquier archivo
+que sueltes.
 
-1. Copiá el archivo a `media/`. Convención de nombre: `fecha-slug.jpg`
-   (ej. `2026-07-24-repollo.jpg`).
-2. Referencialo por su nombre en el encabezado, **no** con `![[ ]]`:
+El flujo:
+
+1. Arrastrá la imagen (o pegala) directamente sobre la nota. Obsidian la copia
+   a `media/` y te inserta automáticamente una línea como
+   `![[2026-07-24-repollo.jpg]]` en el cuerpo.
+2. **Borrá esa línea insertada** — el cuerpo es para texto, no para la imagen
+   en sí. El sitio no la usa desde ahí.
+3. En cambio, copiá **el mismo nombre de archivo** al encabezado:
    - tipo **imagen**: `archivo: "2026-07-24-repollo.jpg"`
    - los demás tipos: `imagenes: ["2026-07-24-repollo.jpg"]`
 
-Obsidian no va a previsualizar esas imágenes (no sabe de `media/`), pero el sitio
-sí las muestra.
+Es decir: la imagen vive en un solo lugar (la carpeta `media`, adentro del
+vault), pero el sitio la muestra porque está *nombrada* en el encabezado, no
+porque esté incrustada en el texto. Si renombrás el archivo dentro de
+Obsidian, acordate de actualizar el nombre también en el encabezado.
 
 ## Etiquetas
 
