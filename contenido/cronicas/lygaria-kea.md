@@ -4,7 +4,6 @@ tipo: cronica
 fecha: 2026-07-18
 modificado: 2026-07-18
 estado: en-desarrollo
-visibilidad: privada
 etiquetas: ["viaje"]
 lugar: "Lygaria, Kea"
 imagenes: ["2026-07-18-lygaria-kea.jpg"]

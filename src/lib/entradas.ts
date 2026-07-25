@@ -23,7 +23,6 @@ export type EntradaUnificada = {
 };
 
 const ESTADOS = ['semilla', 'en-desarrollo', 'estable'];
-const VISIBILIDADES = ['privada', 'publica'];
 
 function comoLista(valor: unknown): string[] {
   if (valor == null) return [];
@@ -67,7 +66,6 @@ function normalizar(entrada: any, coleccion: NombreColeccion): EntradaUnificada 
   datos.fecha = fecha;
   datos.modificado = datos.modificado instanceof Date ? datos.modificado : fecha;
   datos.estado = elegir(datos.estado, ESTADOS, 'semilla');
-  datos.visibilidad = elegir(datos.visibilidad, VISIBILIDADES, 'privada');
   datos.etiquetas = comoLista(datos.etiquetas);
   datos.imagenes = comoLista(datos.imagenes);
   datos.variedades = comoLista(datos.variedades);

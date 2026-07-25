@@ -4,7 +4,6 @@ tipo: imagen
 fecha: 2026-07-18
 modificado: 2026-07-18
 estado: estable
-visibilidad: privada
 etiquetas: ["prueba", "textura"]
 archivo: "2026-07-18-textura-vestido.jpg"
 origen: propia

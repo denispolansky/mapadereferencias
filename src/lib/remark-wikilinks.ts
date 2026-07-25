@@ -1,5 +1,6 @@
 import { findAndReplace } from 'mdast-util-find-and-replace';
 import { getSlugIndex, slugificar } from './slugs.ts';
+import { ruta } from './rutas.ts';
 
 /** Captura [[enlace]], [[enlace|texto]] y también ![[archivo]] (embed de Obsidian). */
 const WIKILINK_RE = /(!?)\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
@@ -28,7 +29,7 @@ export default function remarkWikilinks() {
             const archivo = objetivo.split('/').pop() ?? objetivo;
             return {
               type: 'image',
-              url: `/media/${archivo}`,
+              url: ruta(`/media/${archivo}`),
               alt: rawLabel?.trim() ?? '',
               data: { hProperties: { className: ['imagen-cuerpo'], loading: 'lazy' } },
             };
@@ -50,7 +51,7 @@ export default function remarkWikilinks() {
           }
           return {
             type: 'link',
-            url: `/${tipo}/${slugificar(objetivo)}`,
+            url: ruta(`/${tipo}/${slugificar(objetivo)}`),
             data: { hProperties: { className: ['wikilink'] } },
             children: [{ type: 'text', value: texto }],
           };

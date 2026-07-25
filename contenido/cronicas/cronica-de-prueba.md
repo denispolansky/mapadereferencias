@@ -4,7 +4,6 @@ tipo: cronica
 fecha: 2026-07-18
 modificado: 2026-07-18
 estado: semilla
-visibilidad: privada
 etiquetas: ["prueba"]
 lugar: "Alcnafory"
 fecha-visita: 2026-07-18

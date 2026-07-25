@@ -21,7 +21,6 @@ const campoUniversal = {
   fecha,
   modificado: fecha,
   estado: z.string().optional().catch(undefined),
-  visibilidad: z.string().optional().catch(undefined),
   etiquetas: textoOLista,
   imagenes: textoOLista,
   // Campos propios de algún tipo. Se aceptan en cualquiera: si no corresponden,

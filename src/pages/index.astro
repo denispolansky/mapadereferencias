@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getTodasLasEntradas, extraerSlugsReferenciados, miniaturaDe } from '../lib/entradas';
 import { formatearFecha, rutaMedia } from '../lib/formato';
+import { ruta } from '../lib/rutas';
 
 const entradas = await getTodasLasEntradas();
 
@@ -56,7 +57,7 @@ const items = entradas
     <ul class="muro" id="indice">
       {items.map((item) => (
         <li class="celda" data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
-          <a class="marco" href={`/${item.tipo}/${item.slug}`} style={item.color ? `background: ${item.color}` : undefined}>
+          <a class="marco" href={ruta(`/${item.tipo}/${item.slug}`)} style={item.color ? `background: ${item.color}` : undefined}>
             {item.imagen && <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />}
             <div class="cartel">
               <span class="titulo obra">{item.titulo}</span>
@@ -82,7 +83,7 @@ const items = entradas
       <tbody>
         {items.map((item) => (
           <tr data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
-            <td><a class="titulo obra" href={`/${item.tipo}/${item.slug}`}>{item.titulo}</a></td>
+            <td><a class="titulo obra" href={ruta(`/${item.tipo}/${item.slug}`)}>{item.titulo}</a></td>
             <td><span class="badge">{item.tipo}</span></td>
             <td>{item.fuente ?? '—'}</td>
             <td>{item.fecha.getFullYear()}</td>

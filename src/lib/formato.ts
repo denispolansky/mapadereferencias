@@ -1,12 +1,15 @@
+import { ruta as prefijar } from './rutas.ts';
+
 export function formatearFecha(fecha: Date): string {
   // guion no separable: evita que la fecha corte de línea a mitad (p. ej. en celdas angostas del muro)
   return fecha.toISOString().slice(0, 10).replace(/-/g, '‑');
 }
 
 /** Las entradas guardan rutas de imagen relativas a /media (ver frontmatter). */
-export function rutaMedia(ruta: string): string {
-  if (/^https?:\/\//.test(ruta) || ruta.startsWith('/')) return ruta;
-  return `/media/${ruta}`;
+export function rutaMedia(archivo: string): string {
+  if (/^https?:\/\//.test(archivo)) return archivo;
+  const nombre = archivo.replace(/^\/?media\//, '').replace(/^\//, '');
+  return prefijar(`/media/${nombre}`);
 }
 
 /** Tiempo relativo en español, para la línea de "archivo vivo" del índice. */

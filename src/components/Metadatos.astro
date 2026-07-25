@@ -1,6 +1,7 @@
 ---
 import { formatearFecha } from '../lib/formato';
 import { slugificar } from '../lib/slugs';
+import { ruta } from '../lib/rutas';
 
 interface Props {
   data: Record<string, any>;
@@ -12,42 +13,43 @@ const { data } = Astro.props;
   <div><dt>fecha</dt><dd>{formatearFecha(data.fecha)}</dd></div>
   <div><dt>modificado</dt><dd>{formatearFecha(data.modificado)}</dd></div>
   <div><dt>estado</dt><dd>{data.estado}</dd></div>
-  <div><dt>visibilidad</dt><dd>{data.visibilidad}</dd></div>
-  {data.tipo === 'receta' && data.probada != null && (
+  {/* Cada campo se muestra si tiene valor, sin importar el tipo de entrada:
+      una idea también puede tener fuente, una receta también puede tener lugar. */}
+  {data.probada != null && (
     <div><dt>probada</dt><dd>{data.probada} {data.probada === 1 ? 'vez' : 'veces'}</dd></div>
   )}
-  {data.tipo === 'receta' && data['ultima-prueba'] && (
+  {data['ultima-prueba'] && (
     <div><dt>última prueba</dt><dd>{formatearFecha(data['ultima-prueba'])}</dd></div>
   )}
-  {data.tipo === 'receta' && data.origen && (
-    <div><dt>origen</dt><dd>{data.origen}{data.fuente ? ` — ${data.fuente}` : ''}</dd></div>
+  {(data.origen || data.fuente) && (
+    <div>
+      <dt>{data.origen ? 'origen' : 'fuente'}</dt>
+      <dd>{data.origen ? `${data.origen}${data.fuente ? ` — ${data.fuente}` : ''}` : data.fuente}</dd>
+    </div>
   )}
-  {data.tipo === 'receta' && data['desciende-de'] && (
-    <div><dt>desciende de</dt><dd><a href={`/receta/${data['desciende-de']}`}>{data['desciende-de']}</a></dd></div>
+  {data['desciende-de'] && (
+    <div><dt>desciende de</dt><dd><a href={ruta(`/receta/${data['desciende-de']}`)}>{data['desciende-de']}</a></dd></div>
   )}
-  {data.tipo === 'imagen' && data.origen && (
-    <div><dt>origen</dt><dd>{data.origen}{data.fuente ? ` — ${data.fuente}` : ''}</dd></div>
-  )}
-  {data.tipo === 'ingrediente' && data.procedencia && (
+  {data.procedencia && (
     <div><dt>procedencia</dt><dd>{data.procedencia}</dd></div>
   )}
-  {data.tipo === 'ingrediente' && data.variedades?.length > 0 && (
+  {data.variedades?.length > 0 && (
     <div><dt>variedades</dt><dd>{data.variedades.join(', ')}</dd></div>
   )}
-  {data.tipo === 'ingrediente' && data.tecnicas?.length > 0 && (
+  {data.tecnicas?.length > 0 && (
     <div><dt>técnicas</dt><dd>{data.tecnicas.join(', ')}</dd></div>
   )}
-  {data.tipo === 'cronica' && data.lugar && (
+  {data.lugar && (
     <div><dt>lugar</dt><dd>{data.lugar}</dd></div>
   )}
-  {data.tipo === 'cronica' && data['fecha-visita'] && (
+  {data['fecha-visita'] && (
     <div><dt>visitado</dt><dd>{formatearFecha(data['fecha-visita'])}</dd></div>
   )}
   {data.etiquetas?.length > 0 && (
     <div>
       <dt>etiquetas</dt>
       <dd>
-        {data.etiquetas.map((e: string) => <a class="etiqueta" href={`/etiqueta/${slugificar(e)}`}>{e.trim()}</a>)}
+        {data.etiquetas.map((e: string) => <a class="etiqueta" href={ruta(`/etiqueta/${slugificar(e)}`)}>{e.trim()}</a>)}
       </dd>
     </div>
   )}

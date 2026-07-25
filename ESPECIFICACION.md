@@ -132,6 +132,37 @@ Antes de escribir CSS, se presenta a la autora una mini propuesta tipográfica (
 - **Se elimina el orden manual por fecha/título:** el índice queda ordenado por fecha (más reciente primero).
 - **Se elimina la vista diario como página separada** (ver punto 4 de "Decisiones ya tomadas"): con el índice ordenado por fecha, la vista cronológica queda absorbida por el propio índice. El menú de navegación queda en solo "índice".
 
+## Cómo se carga y se publica el contenido (decidido en uso real)
+
+La primera carga de contenido real mostró que el cuello de botella no era el
+diseño sino la fricción de publicar. Se rediseñó el circuito entero:
+
+- **Se escribe en Obsidian**, con la carpeta `contenido/` abierta como vault. Es
+  solo un editor sobre los mismos archivos: el sitio lee exactamente lo que ella
+  ve. Las plantillas quedaron mínimas y la guía vive en `contenido/LEEME.md`.
+- **El sistema se adapta a la nota, no al revés.** Todo el frontmatter es
+  opcional: una nota sin encabezado es una entrada válida (título del nombre de
+  archivo, fecha del archivo, estado `semilla`). El tipo sale de la carpeta, no
+  del campo. Los slugs toleran mayúsculas, espacios y acentos. Ningún error de
+  tipeo puede romper el build: los campos se normalizan en `lib/entradas.ts`.
+- **Las imágenes se arrastran y ya.** `![[foto.jpg]]`, la sintaxis que Obsidian
+  escribe sola, se renderiza como imagen. No hay que copiar nombres al
+  frontmatter (ese paso hizo perder una foto en la primera carga real).
+- **La subida es automática**: el complemento Obsidian Git sincroniza cada 10
+  minutos. Se dejó preconfigurado en `.obsidian/plugins/obsidian-git/data.json`.
+  `workspace.json` se destrackeó porque cambia a cada rato y generaba conflictos.
+- **El sitio se publica solo** con GitHub Actions en GitHub Pages, en
+  `https://denispolansky.github.io/mapadereferencias/`. Cada push reconstruye.
+  Como cuelga de una subcarpeta, todo enlace interno se prefija con el helper de
+  `lib/rutas.ts` (único lugar a cambiar si algún día hay dominio propio).
+
+**Se elimina el campo `visibilidad`.** Era una decisión sin uso: el repositorio
+es público, así que las notas ya son visibles en GitHub independientemente de lo
+que muestre el sitio. Mantener un campo que sugiere una privacidad que no existe
+era peor que no tenerlo. Si en algún momento se quiere contenido realmente
+privado, hay que resolverlo en otra capa (repositorio privado + otro hosting),
+no con un campo en el frontmatter.
+
 ## Manifiesto de diseño
 
 Surgido de una sesión de dirección conceptual: análisis por familias de referencias (editorial — Apartamento, The Gentlewoman, Kinfolk, Aesop; archivo — Are.na, Internet Archive, Rijksmuseum, Cooper Hewitt, The Met; estudios creativos — OK-RM, Studio Airport, DIA, Common Name; gastronomía con espíritu crítico) para entender principios, no copiar estéticas. Estos diez principios guían las decisiones de diseño, arquitectura y desarrollo de acá en adelante:

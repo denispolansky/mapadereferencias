@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getTodasLasEntradas } from '../../lib/entradas';
 import { slugificar } from '../../lib/slugs';
+import { ruta } from '../../lib/rutas';
 import { formatearFecha, extracto } from '../../lib/formato';
 
 export async function getStaticPaths() {
@@ -35,7 +36,7 @@ const items = entradas
     <ul class="lista-etiqueta">
       {items.map((e: any) => (
         <li>
-          <a href={`/${e.tipo}/${e.slug}`}>{e.data.titulo}</a>
+          <a href={ruta(`/${e.tipo}/${e.slug}`)}>{e.data.titulo}</a>
           <span class="meta">{e.tipo} · {formatearFecha(e.data.fecha)}</span>
           <p>{extracto(e.body, 140)}</p>
         </li>

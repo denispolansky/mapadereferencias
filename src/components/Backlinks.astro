@@ -1,6 +1,7 @@
 ---
 import type { EntradaUnificada } from '../lib/entradas';
 import { rutaMedia } from '../lib/formato';
+import { ruta } from '../lib/rutas';
 
 interface Props {
   backlinks: EntradaUnificada[];
@@ -20,7 +21,7 @@ const items = backlinks.map((b) => ({
     <ul class="grupo">
       {items.map((b) => (
         <li class="bloque" data-tipo={b.tipo}>
-          <a href={`/${b.tipo}/${b.slug}`}>
+          <a href={ruta(`/${b.tipo}/${b.slug}`)}>
             {b.imagen && <img class="miniatura" src={rutaMedia(b.imagen)} alt="" loading="lazy" />}
             <span class="info">
               <span class="tipo">{b.tipo}</span>

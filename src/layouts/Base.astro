@@ -1,9 +1,11 @@
 ---
+import { ruta } from '../lib/rutas';
+
 interface Props {
   titulo: string;
 }
 const { titulo } = Astro.props;
-const ruta = Astro.url.pathname;
+const rutaActual = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="es">
@@ -14,9 +16,9 @@ const ruta = Astro.url.pathname;
   </head>
   <body>
     <header class="cabecera">
-      <a class="marca" href="/">archivo vivo</a>
+      <a class="marca" href={ruta("/")}>archivo vivo</a>
       <nav>
-        <a href="/" aria-current={ruta === '/' ? 'page' : undefined}>índice</a>
+        <a href={ruta('/')} aria-current={rutaActual.replace(/\/$/, '') === ruta('/').replace(/\/$/, '') ? 'page' : undefined}>índice</a>
       </nav>
     </header>
     <main>
@@ -28,14 +30,14 @@ const ruta = Astro.url.pathname;
         font-style: normal;
         font-weight: 400 700;
         font-display: swap;
-        src: url('/fonts/archivo-variable.woff2') format('woff2');
+        src: url('/mapadereferencias/fonts/archivo-variable.woff2') format('woff2');
       }
       @font-face {
         font-family: 'Archivo';
         font-style: italic;
         font-weight: 400 700;
         font-display: swap;
-        src: url('/fonts/archivo-italic.woff2') format('woff2');
+        src: url('/mapadereferencias/fonts/archivo-italic.woff2') format('woff2');
       }
       :root {
         --acento: #141414;

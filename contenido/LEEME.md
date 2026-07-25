@@ -19,7 +19,6 @@ Eso es todo. Una nota con solo texto ya es una entrada válida y aparece en el
   `ideas/` a `recetas/`, pasa a ser receta. No hay que tocar nada más.
 - **La fecha** es la del archivo, si no declarás otra.
 - **El estado** es `semilla` si no decís lo contrario.
-- **La visibilidad** es `privada` si no decís lo contrario.
 
 Podés nombrar las notas como quieras: "Repollo asado.md" funciona igual que
 "repollo-asado.md" (la dirección web se ordena sola).
