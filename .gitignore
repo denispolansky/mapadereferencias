@@ -9,3 +9,8 @@ contenido/.obsidian/workspace.json
 contenido/.obsidian/workspace-mobile.json
 contenido/.obsidian/workspace
 contenido/.obsidian/cache
+
+# Código de los complementos: se descarga solo al instalarlos.
+# Su configuración (data.json) sí se versiona, para que viaje entre máquinas.
+contenido/.obsidian/plugins/*/*
+!contenido/.obsidian/plugins/*/data.json

@@ -62,10 +62,23 @@ entre `---` de arriba de todo), y Obsidian los muestra como "Propiedades":
 Un error de tipeo acá no rompe nada: si un campo no se entiende, se ignora y la
 entrada se publica igual.
 
-## Publicar los cambios
+## Publicar los cambios (automático)
 
-Escribir en Obsidian guarda la nota en tu computadora. Para que entre al
-archivo (versionado, con historia), hay que subirla. Con **GitHub Desktop**:
-mirás la lista de cambios, escribís cualquier frase en el cuadro de abajo,
-**Commit**, y después **Push**. No hace falta hacerlo por cada nota: podés
-escribir toda la semana y subir todo junto una vez.
+Con el complemento **Git** instalado en Obsidian, no hay que hacer nada: cada
+10 minutos guarda y sube lo que hayas escrito, en silencio. Al abrir Obsidian
+también baja lo que haya de nuevo.
+
+Para instalarlo, una sola vez:
+
+1. Obsidian → **Configuración** (el engranaje) → **Complementos de la
+   comunidad** → desactivar el modo restringido si lo pide.
+2. **Explorar** → buscar **"Git"** (el de Vinzent03) → **Instalar** → **Activar**.
+3. Listo. La configuración ya viene puesta en este archivo, no hay que tocar
+   nada más.
+
+Abajo a la derecha, en la barra de estado, vas a ver cuándo sincronizó por
+última vez. Si querés forzar una subida sin esperar: `Cmd+P` → "Git: Commit
+and sync".
+
+Si algún día algo se traba y aparece un aviso de conflicto, no pelees con eso:
+avisame y lo resuelvo yo.
