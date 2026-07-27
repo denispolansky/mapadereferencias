@@ -34,6 +34,15 @@ en medio del texto, ponela en el encabezado: `imagenes: ["foto.jpg"]`. Pero no
 hace falta: si no lo hacés, la primera foto del cuerpo se usa igual como
 miniatura en el índice.
 
+## Borrar entradas
+
+Borrá la nota y listo. Si su foto no la usa ninguna otra entrada, se elimina
+sola en la próxima publicación — no quedan imágenes sueltas ocupando lugar.
+
+Una imagen se conserva mientras alguna nota la nombre, aunque sea de pasada. Y
+aunque se borre, queda guardada en la historia del archivo: siempre se puede
+recuperar.
+
 ## Conectar entradas
 
 Escribí `[[` y Obsidian te autocompleta. En el sitio se convierte en un enlace,

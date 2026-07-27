@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # para poder borrar del repo las imágenes que quedaron huérfanas
   pages: write
   id-token: write
 
@@ -30,6 +30,21 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+
+      # Si se elimino una entrada, su imagen queda sin dueno. Se borra antes de
+      # construir, asi tampoco viaja al sitio publicado. El "[skip ci]" evita
+      # que este commit dispare otra publicacion en cadena.
+      - name: Limpiar imagenes sin entrada
+        run: |
+          node scripts/limpiar-media.mjs
+          if [ -n "$(git status --porcelain contenido/media)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A contenido/media
+            git commit -m "Limpiar imagenes que ya no usa ninguna entrada [skip ci]"
+            git push
+          fi
+
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
