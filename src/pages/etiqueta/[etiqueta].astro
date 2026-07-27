@@ -1,0 +1,74 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTodasLasEntradas } from '../../lib/entradas';
+import { slugificar } from '../../lib/slugs';
+import { ruta } from '../../lib/rutas';
+import { formatearFecha, extracto } from '../../lib/formato';
+
+export async function getStaticPaths() {
+  const entradas = await getTodasLasEntradas();
+  // Se agrupa por etiqueta slugificada, así "Repollo" y "repollo " son la misma.
+  type Grupo = { nombre: string; entradas: typeof entradas };
+  const porEtiqueta = new Map<string, Grupo>();
+  for (const entrada of entradas) {
+    for (const etiqueta of entrada.data.etiquetas ?? []) {
+      const clave = slugificar(etiqueta);
+      if (!clave) continue;
+      const grupo: Grupo = porEtiqueta.get(clave) ?? { nombre: etiqueta.trim(), entradas: [] };
+      grupo.entradas.push(entrada);
+      porEtiqueta.set(clave, grupo);
+    }
+  }
+  return [...porEtiqueta.entries()].map(([clave, grupo]) => ({
+    params: { etiqueta: clave },
+    props: { etiqueta: grupo.nombre, entradas: grupo.entradas },
+  }));
+}
+
+const { etiqueta, entradas } = Astro.props;
+const items = entradas
+  .slice()
+  .sort((a: any, b: any) => (b.data.fecha as Date).getTime() - (a.data.fecha as Date).getTime());
+---
+<Base titulo={`etiqueta: ${etiqueta}`}>
+  <div class="columna">
+    <h1>etiqueta: {etiqueta}</h1>
+    <ul class="lista-etiqueta">
+      {items.map((e: any) => (
+        <li>
+          <a href={ruta(`/${e.tipo}/${e.slug}`)}>{e.data.titulo}</a>
+          <span class="meta">{e.tipo} · {formatearFecha(e.data.fecha)}</span>
+          <p>{extracto(e.body, 140)}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
+<style>
+  h1 { font-size: 2rem; }
+  .lista-etiqueta {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+  }
+  .lista-etiqueta li {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  .lista-etiqueta a {
+    color: #111;
+    text-decoration: none;
+    font-size: 1.05rem;
+  }
+  .lista-etiqueta a:hover { text-decoration: underline; }
+  .meta {
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: 0.5rem;
+  }
+  .lista-etiqueta p {
+    margin: 0.25rem 0 0;
+    color: #444;
+    font-size: 0.9rem;
+  }
+</style>

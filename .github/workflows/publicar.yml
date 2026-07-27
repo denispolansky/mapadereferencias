@@ -1,0 +1,62 @@
+name: Publicar el archivo
+
+# Cada vez que se suben cambios (incluidos los que sincroniza Obsidian solo),
+# el sitio se reconstruye y se publica en GitHub Pages.
+on:
+  push:
+    branches:
+      - claude/archivo-vivo-spec-kxl65o
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write # para poder borrar del repo las imágenes que quedaron huérfanas
+  pages: write
+  id-token: write
+
+# Si se sube algo mientras una publicación está en curso, se espera a que
+# termine en vez de cancelarla, para no dejar el sitio a medio actualizar.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Si se elimino una entrada, su imagen queda sin dueno. Se borra antes de
+      # construir, asi tampoco viaja al sitio publicado. El "[skip ci]" evita
+      # que este commit dispare otra publicacion en cadena.
+      - name: Limpiar imagenes sin entrada
+        run: |
+          node scripts/limpiar-media.mjs
+          if [ -n "$(git status --porcelain contenido/media)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A contenido/media
+            git commit -m "Limpiar imagenes que ya no usa ninguna entrada [skip ci]"
+            git push
+          fi
+
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

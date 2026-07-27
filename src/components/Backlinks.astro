@@ -1,0 +1,99 @@
+---
+import type { EntradaUnificada } from '../lib/entradas';
+import { rutaMedia } from '../lib/formato';
+import { ruta } from '../lib/rutas';
+
+interface Props {
+  backlinks: EntradaUnificada[];
+}
+const { backlinks } = Astro.props;
+
+const items = backlinks.map((b) => ({
+  slug: b.slug,
+  tipo: b.tipo,
+  titulo: b.data.titulo as string,
+  imagen: (b.data.archivo ?? b.data.imagenes?.[0] ?? null) as string | null,
+}));
+---
+{items.length > 0 && (
+  <footer class="backlinks">
+    <h2>mencionada en</h2>
+    <ul class="grupo">
+      {items.map((b) => (
+        <li class="bloque" data-tipo={b.tipo}>
+          <a href={ruta(`/${b.tipo}/${b.slug}`)}>
+            {b.imagen && <img class="miniatura" src={rutaMedia(b.imagen)} alt="" loading="lazy" />}
+            <span class="info">
+              <span class="tipo">{b.tipo}</span>
+              <span class="titulo-bloque obra">{b.titulo}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </footer>
+)}
+<style>
+  .backlinks {
+    margin-top: 4.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid #ccc;
+  }
+  .backlinks h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #777;
+    font-weight: normal;
+    margin: 0 0 1.5rem;
+  }
+  .grupo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    border: 1px solid #e5e3de;
+    padding: 1.5rem;
+  }
+  .bloque {
+    width: 8.5rem;
+  }
+  .bloque a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .miniatura {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .tipo {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .titulo-bloque {
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: #141414;
+  }
+  .bloque a:hover .titulo-bloque {
+    color: var(--acento);
+    text-decoration: underline;
+  }
+  .bloque[data-tipo='idea'] .tipo { color: #9c7a3c; }
+  .bloque[data-tipo='receta'] .tipo { color: #a85c3e; }
+  .bloque[data-tipo='imagen'] .tipo { color: #4f6b85; }
+  .bloque[data-tipo='ingrediente'] .tipo { color: #5f7d4a; }
+  .bloque[data-tipo='cronica'] .tipo { color: #7d5570; }
+</style>

@@ -1,0 +1,334 @@
+---
+import Base from '../layouts/Base.astro';
+import { getTodasLasEntradas, extraerSlugsReferenciados, miniaturaDe } from '../lib/entradas';
+import { formatearFecha, rutaMedia } from '../lib/formato';
+import { ruta } from '../lib/rutas';
+
+const entradas = await getTodasLasEntradas();
+
+const conteoBacklinks = new Map<string, number>();
+for (const e of entradas) {
+  for (const slug of extraerSlugsReferenciados(e.body)) {
+    conteoBacklinks.set(slug, (conteoBacklinks.get(slug) ?? 0) + 1);
+  }
+}
+
+// Color sólido estable por entrada, para las celdas sin imagen (hue "al azar" derivado del slug).
+function colorDeSlug(slug: string): string {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) % 360;
+  return `hsl(${h}, 52%, 58%)`;
+}
+
+const items = entradas
+  .map((e) => {
+    const imagen = miniaturaDe(e);
+    return {
+      slug: e.slug,
+      tipo: e.tipo,
+      titulo: e.data.titulo,
+      fecha: e.data.fecha as Date,
+      estado: e.data.estado as string,
+      etiquetas: (e.data.etiquetas ?? []) as string[],
+      fuente: ((e.data as any).fuente ?? null) as string | null,
+      conexiones: conteoBacklinks.get(e.slug) ?? 0,
+      imagen,
+      color: imagen ? null : colorDeSlug(e.slug),
+    };
+  })
+  .sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
+---
+<Base titulo="índice">
+  <div class="buscador-indice">
+    <input type="search" id="filtro" class="obra" placeholder="buscar en el archivo…" autocomplete="off" />
+  </div>
+  <div class="controles-indice">
+    <span class="conteo" id="conteo">{items.length} entradas</span>
+    <div class="vista">
+      <button type="button" data-vista="grilla" class="activo" aria-label="ver en grilla">
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+      </button>
+      <button type="button" data-vista="lista" aria-label="ver en lista">
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="indice-vistas" id="indice-vistas" data-vista="grilla">
+    <ul class="muro" id="indice">
+      {items.map((item) => (
+        <li class="celda" data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
+          <a class="marco" href={ruta(`/${item.tipo}/${item.slug}`)} style={item.color ? `background: ${item.color}` : undefined}>
+            {item.imagen && <img src={rutaMedia(item.imagen)} alt="" loading="lazy" />}
+            <div class="cartel">
+              <span class="titulo obra">{item.titulo}</span>
+              <span class="ficha">{item.tipo} · {item.estado} · {formatearFecha(item.fecha)}</span>
+              {item.conexiones > 0 && (
+                <span class="conexiones">{item.conexiones} {item.conexiones === 1 ? 'conexión' : 'conexiones'}</span>
+              )}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <table class="tabla" id="tabla-indice">
+      <thead>
+        <tr>
+          <th>nombre</th>
+          <th>formato</th>
+          <th>fuente</th>
+          <th>año</th>
+          <th>etiquetas</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item) => (
+          <tr data-buscar={`${item.titulo} ${item.tipo} ${item.etiquetas.join(' ')} ${item.fuente ?? ''}`.toLowerCase()}>
+            <td><a class="titulo obra" href={ruta(`/${item.tipo}/${item.slug}`)}>{item.titulo}</a></td>
+            <td><span class="badge">{item.tipo}</span></td>
+            <td>{item.fuente ?? '—'}</td>
+            <td>{item.fecha.getFullYear()}</td>
+            <td>{item.etiquetas.join(', ')}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Base>
+<style>
+  .buscador-indice {
+    margin: 0.5rem 0 2.25rem;
+  }
+  .buscador-indice input {
+    width: 100%;
+    font-size: 1.25rem;
+    color: #141414;
+    padding: 0.3rem 0 0.6rem;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+    background: none;
+  }
+  .buscador-indice input::placeholder {
+    color: #c4c0b6;
+  }
+  .buscador-indice input:focus {
+    border-bottom-color: var(--acento);
+  }
+  .controles-indice {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: #999;
+    margin-bottom: 3rem;
+  }
+  .conteo {
+    letter-spacing: 0.02em;
+  }
+  .vista {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .vista button {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  .vista button:hover {
+    color: #999;
+  }
+  .vista button.activo {
+    color: #141414;
+  }
+
+  /* --- vista grilla (muro) --- */
+  .muro {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 9rem);
+    justify-content: space-between;
+    grid-auto-flow: row dense;
+    column-gap: 2.5rem;
+    row-gap: 4rem;
+  }
+  .celda {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .marco {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    --x: 50%;
+    --y: 50%;
+  }
+  .marco:hover,
+  .marco:focus-visible {
+    z-index: 5;
+  }
+  .marco img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cartel {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.5rem 0.85rem;
+    background: #fff;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+    pointer-events: none;
+  }
+  .cartel .titulo {
+    color: #141414;
+    font-size: 0.85rem;
+  }
+  .cartel .ficha {
+    color: #999;
+    font-size: 0.68rem;
+  }
+  .cartel .conexiones {
+    color: #b0aca2;
+    font-size: 0.65rem;
+  }
+  .cartel .conexiones::before {
+    content: '⌁ ';
+  }
+  @media (hover: hover) {
+    .cartel {
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+    .marco:hover .cartel,
+    .marco:focus-visible .cartel {
+      opacity: 1;
+    }
+  }
+  /* --- vista lista (tabla) --- */
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .tabla th,
+  .tabla td {
+    text-align: left;
+    padding: 0.6rem 1rem 0.6rem 0;
+    border-bottom: 1px solid #e8e6e1;
+  }
+  .tabla th {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #999;
+    font-weight: normal;
+  }
+  .tabla td:nth-child(3),
+  .tabla td:nth-child(4) {
+    font-size: 0.78rem;
+    color: #777;
+  }
+  .tabla td:last-child {
+    font-size: 0.78rem;
+    color: #999;
+  }
+  .tabla .titulo {
+    font-size: 1rem;
+    color: #141414;
+    text-decoration: none;
+  }
+  .tabla .titulo:hover {
+    color: var(--acento);
+  }
+  .tabla .badge {
+    display: inline-block;
+    border: 1px solid #d4d1c9;
+    padding: 0.12rem 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    color: #555;
+  }
+
+  .indice-vistas[data-vista='grilla'] .tabla {
+    display: none;
+  }
+  .indice-vistas[data-vista='lista'] .muro {
+    display: none;
+  }
+
+  @media (max-width: 65rem) {
+    .muro {
+      row-gap: 3rem;
+    }
+  }
+  @media (max-width: 40rem) {
+    .controles-indice {
+      flex-wrap: wrap;
+      gap: 0.9rem 1.25rem;
+    }
+    .muro {
+      grid-template-columns: repeat(auto-fill, 7.5rem);
+      column-gap: 1.5rem;
+      row-gap: 2.5rem;
+    }
+  }
+</style>
+<script>
+  const contenedorMuro = document.getElementById('indice');
+  const contenedorTabla = document.querySelector('#tabla-indice tbody');
+  const indiceVistas = document.getElementById('indice-vistas');
+  const botonesVista = document.querySelectorAll('.vista button');
+
+  botonesVista.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      const vista = boton.getAttribute('data-vista');
+      if (indiceVistas && vista) indiceVistas.setAttribute('data-vista', vista);
+      botonesVista.forEach((b) => b.classList.remove('activo'));
+      boton.classList.add('activo');
+    });
+  });
+
+  contenedorMuro?.addEventListener('mousemove', (e) => {
+    const marco = (e.target as HTMLElement).closest('.marco') as HTMLElement | null;
+    if (!marco) return;
+    const rect = marco.getBoundingClientRect();
+    marco.style.setProperty('--x', `${e.clientX - rect.left}px`);
+    marco.style.setProperty('--y', `${e.clientY - rect.top}px`);
+  });
+
+  const filtro = document.getElementById('filtro') as HTMLInputElement | null;
+  const conteo = document.getElementById('conteo');
+  filtro?.addEventListener('input', () => {
+    const q = filtro.value.trim().toLowerCase();
+    const celdas = contenedorMuro ? (Array.from(contenedorMuro.children) as HTMLElement[]) : [];
+    const filas = contenedorTabla ? (Array.from(contenedorTabla.children) as HTMLElement[]) : [];
+    let visibles = 0;
+    celdas.forEach((el) => {
+      const match = !q || (el.dataset.buscar ?? '').includes(q);
+      el.style.display = match ? '' : 'none';
+      if (match) visibles++;
+    });
+    filas.forEach((el) => {
+      const match = !q || (el.dataset.buscar ?? '').includes(q);
+      el.style.display = match ? '' : 'none';
+    });
+    if (conteo) conteo.textContent = `${visibles} ${visibles === 1 ? 'entrada' : 'entradas'}`;
+  });
+</script>

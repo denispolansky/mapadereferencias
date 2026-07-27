@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.env
+.DS_Store
+
+# Obsidian: estado volátil de la interfaz (la config útil sí se versiona)
+contenido/.obsidian/workspace.json
+contenido/.obsidian/workspace-mobile.json
+contenido/.obsidian/workspace
+contenido/.obsidian/cache
+
+# Código de los complementos: se descarga solo al instalarlos.
+# Su configuración (data.json) sí se versiona, para que viaje entre máquinas.
+contenido/.obsidian/plugins/*/*
+!contenido/.obsidian/plugins/*/data.json

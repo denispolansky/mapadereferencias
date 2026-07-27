@@ -1,0 +1,70 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Metadatos from '../../components/Metadatos.astro';
+import Backlinks from '../../components/Backlinks.astro';
+import { getTodasLasEntradas, getBacklinks, imagenesDe } from '../../lib/entradas';
+import { rutaMedia } from '../../lib/formato';
+
+export async function getStaticPaths() {
+  const entradas = await getTodasLasEntradas();
+  return entradas.map((entrada) => ({
+    params: { tipo: entrada.tipo, slug: entrada.slug },
+    props: { entrada },
+  }));
+}
+
+const { entrada } = Astro.props;
+const datos: Record<string, any> = entrada.data;
+const coleccion = await getEntry(entrada.coleccion, entrada.slug);
+const Content = coleccion ? (await render(coleccion)).Content : null;
+const backlinks = await getBacklinks(entrada.slug);
+const imagenes = imagenesDe(entrada);
+---
+<Base titulo={datos.titulo}>
+  <article>
+    <div class="columna">
+      <h1 class="obra">{datos.titulo}</h1>
+      <Metadatos data={datos} />
+    </div>
+    {imagenes.length > 0 && (
+      <div class="imagenes-entrada">
+        {imagenes.map((ruta) => <img src={rutaMedia(ruta)} alt="" loading="lazy" />)}
+      </div>
+    )}
+    <div class="columna">
+      {datos.nota && <p class="nota"><em>{datos.nota}</em></p>}
+      <div class="cuerpo">
+        {Content && <Content />}
+      </div>
+      <Backlinks backlinks={backlinks} />
+    </div>
+  </article>
+</Base>
+<style>
+  h1 {
+    font-size: 2.6rem;
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 0;
+  }
+  .imagenes-entrada {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: min(66rem, 92%);
+    margin: 1.5rem 0;
+  }
+  .nota {
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .cuerpo :global(p) {
+    margin: 1em 0;
+  }
+  /* Imágenes arrastradas al cuerpo desde Obsidian: ![[foto.jpg]] */
+  .cuerpo :global(.imagen-cuerpo) {
+    max-width: min(66rem, 100%);
+    margin: 1.75rem 0;
+  }
+</style>
