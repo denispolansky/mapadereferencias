@@ -45,6 +45,18 @@ y la entrada enlazada muestra al pie "mencionada en" con quién la nombró.
 Si la entrada todavía no existe, queda en gris hasta que la crees. Es una forma
 válida de dejar semillas.
 
+## Las propiedades aparecen solas
+
+Con el complemento **Templater** instalado, cada nota nueva arranca con las
+propiedades del tipo que corresponde a su carpeta: creás una nota en `recetas/`
+y ya viene con `tipo: receta`, `estado` y `etiquetas` listos para completar.
+
+Para instalarlo, una sola vez: Obsidian → **Configuración** → **Complementos de
+la comunidad** → **Explorar** → buscar **"Templater"** → **Instalar** →
+**Activar**. La configuración ya está puesta en este archivo.
+
+Igual son opcionales: una nota sin propiedades se publica lo mismo.
+
 ## Si querés precisar más
 
 Todos estos campos son opcionales. Se escriben en el encabezado (el bloque
